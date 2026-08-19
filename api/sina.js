@@ -11,8 +11,17 @@ export default async function handler(req, res) {
       }
     });
     const data = await r.json();
-    // 直接返回原始数据看格式
-    res.status(200).json(data);
+    const result = {};
+    const items = data?.data?.diff || [];
+    for (const item of items) {
+      result[item.f12] = {
+        name: item.f14,
+        price: item.f2,
+        pct: item.f3,
+        chg: item.f4,
+      };
+    }
+    res.status(200).json(result);
   } catch (e) {
     res.status(500).json({ error: e.message });
   }
