@@ -25,8 +25,4 @@ export default async function handler(req, res) {
       const pct = parseFloat(parts[3]);
       result[sym] = { price, chg, pct, parts };
     }
-    res.status(200).json(result);
-  } catch (e) {
-    res.status(500).json({ error: e.message });
-  }
-}
+  res.status(200).json({ result, raw: text.slice(0, 500) });
