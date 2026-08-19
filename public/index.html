@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8"/>
 <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-<title>Margaret的资产仪表台</title>
+<title>家庭资产仪表台</title>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
 <style>
 *{box-sizing:border-box;margin:0;padding:0}
@@ -17,34 +17,25 @@
   --shadow:0 1px 3px rgba(0,0,0,.06);
 }
 body{font-family:-apple-system,BlinkMacSystemFont,'PingFang SC','Helvetica Neue',sans-serif;background:var(--bg);color:var(--text1)}
-
-/* PASSWORD SCREEN */
 #pw-screen{position:fixed;inset:0;background:#F7F8FA;display:flex;align-items:center;justify-content:center;z-index:1000}
 .pw-box{background:#fff;border-radius:14px;padding:40px;width:340px;box-shadow:0 8px 32px rgba(0,0,0,.1);text-align:center}
 .pw-logo{width:48px;height:48px;background:var(--accent);border-radius:12px;display:flex;align-items:center;justify-content:center;color:#fff;font-size:20px;font-weight:700;margin:0 auto 16px}
 .pw-title{font-size:18px;font-weight:700;margin-bottom:6px}
 .pw-sub{font-size:13px;color:var(--text2);margin-bottom:24px}
-.pw-input{width:100%;padding:11px 14px;border:1.5px solid var(--border);border-radius:8px;font-size:15px;margin-bottom:12px;outline:none;text-align:center;letter-spacing:4px;font-family:var(--mono)}
+.pw-input{width:100%;padding:11px 14px;border:1.5px solid var(--border);border-radius:8px;font-size:18px;margin-bottom:12px;outline:none;text-align:center;letter-spacing:6px;font-family:var(--mono)}
 .pw-input:focus{border-color:var(--accent)}
 .pw-btn{width:100%;padding:11px;background:var(--accent);color:#fff;border:none;border-radius:8px;font-size:14px;font-weight:600;cursor:pointer}
-.pw-btn:hover{background:#1D4ED8}
 .pw-err{color:var(--down);font-size:12px;margin-top:10px;display:none}
 #app{display:none;flex-direction:column;height:100vh;overflow:hidden}
-
-/* HEADER */
-header{height:var(--header);background:var(--surface);border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;padding:0 20px;flex-shrink:0;z-index:50}
+header{height:var(--header);background:var(--surface);border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;padding:0 20px;flex-shrink:0}
 .hdr-l{display:flex;align-items:center;gap:10px}
 .logo{width:26px;height:26px;background:var(--accent);border-radius:6px;display:flex;align-items:center;justify-content:center;color:#fff;font-size:12px;font-weight:700}
 header h1{font-size:14px;font-weight:600}
 .hdr-r{display:flex;align-items:center;gap:10px}
 #lu{font-size:11px;color:var(--text3);font-family:var(--mono)}
-.btn{padding:5px 12px;border-radius:6px;font-size:12px;font-weight:500;cursor:pointer;border:none;transition:.15s}
+.btn{padding:5px 12px;border-radius:6px;font-size:12px;font-weight:500;cursor:pointer;border:none}
 .btn-p{background:var(--accent);color:#fff}.btn-g{background:var(--accent-l);color:var(--accent)}
-
-/* APP LAYOUT */
 .app-body{display:flex;flex:1;overflow:hidden}
-
-/* SIDEBAR */
 aside{width:var(--sidebar);background:var(--surface);border-right:1px solid var(--border);display:flex;flex-direction:column;flex-shrink:0}
 .stabs{display:flex;border-bottom:1px solid var(--border)}
 .stab{flex:1;padding:10px 0;text-align:center;font-size:11px;font-weight:600;color:var(--text3);cursor:pointer;border-bottom:2px solid transparent}
@@ -70,8 +61,6 @@ aside{width:var(--sidebar);background:var(--surface);border-right:1px solid var(
 .sacts{display:flex;gap:5px;margin-top:7px}
 .sbtn{font-size:10px;padding:2px 7px;border-radius:4px;cursor:pointer;border:1px solid var(--border);background:var(--surface)}
 .sfoot{padding:10px;border-top:1px solid var(--border)}
-
-/* MAIN */
 main{flex:1;overflow-y:auto;padding:18px 22px 40px}
 .sec-hdr{display:flex;align-items:center;gap:8px;margin:22px 0 10px}
 .sec-hdr:first-child{margin-top:0}
@@ -80,8 +69,6 @@ main{flex:1;overflow-y:auto;padding:18px 22px 40px}
 .sub{font-size:11px;font-weight:600;color:var(--text2);margin:12px 0 7px 2px}
 .g5{display:grid;grid-template-columns:repeat(5,1fr);gap:8px}
 .g4{display:grid;grid-template-columns:repeat(4,1fr);gap:8px}
-
-/* CARDS */
 .card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:11px 13px;box-shadow:var(--shadow);cursor:pointer;transition:box-shadow .15s,border-color .15s;position:relative;overflow:hidden}
 .card:hover{box-shadow:0 4px 12px rgba(0,0,0,.08);border-color:#C7D2FE}
 .cl{font-size:10px;color:var(--text3);font-weight:500;margin-bottom:4px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
@@ -94,8 +81,8 @@ main{flex:1;overflow-y:auto;padding:18px 22px 40px}
 .vh{background:#FEE2E2;color:#B91C1C}.vx{background:#B91C1C;color:#fff}
 .sbar{position:absolute;top:0;right:0;width:4px;height:100%;border-radius:0 var(--radius) var(--radius) 0}
 .sp{background:var(--up)}.sn{background:var(--down)}
-
-/* VALUATION */
+.lpulse{background:linear-gradient(90deg,#F3F4F6 25%,#E5E7EB 50%,#F3F4F6 75%);background-size:200% 100%;animation:pulse 1.5s infinite;border-radius:4px;height:16px;width:65px;display:inline-block}
+@keyframes pulse{0%{background-position:200% 0}100%{background-position:-200% 0}}
 .vtable{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);overflow:hidden;box-shadow:var(--shadow)}
 .vhdr{display:grid;grid-template-columns:1.6fr repeat(5,1fr);padding:7px 13px;background:var(--bg);border-bottom:1px solid var(--border)}
 .vhdr span{font-size:9px;font-weight:700;color:var(--text3);text-transform:uppercase;letter-spacing:.06em}
@@ -107,8 +94,6 @@ main{flex:1;overflow-y:auto;padding:18px 22px 40px}
 .verp{font-weight:700}.eh{color:var(--up)}.em{color:var(--warn)}.el{color:var(--down)}
 .evts{font-size:9px;color:var(--text3)}
 .ebtn{font-size:10px;color:var(--accent);background:none;border:none;cursor:pointer;padding:0;font-weight:500}
-
-/* MACRO */
 .mgrid{display:grid;grid-template-columns:1fr 1fr;gap:12px}
 .mcard{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:14px;box-shadow:var(--shadow)}
 .mtitle{font-size:12px;font-weight:600;margin-bottom:10px;display:flex;align-items:center;justify-content:space-between}
@@ -119,21 +104,14 @@ main{flex:1;overflow-y:auto;padding:18px 22px 40px}
 .mmeta{font-size:9px;color:var(--text3);margin-top:1px;font-family:var(--mono);text-align:right}
 .badge{font-size:9px;font-weight:700;padding:1px 4px;border-radius:3px;margin-left:3px}
 .bu{background:#DCFCE7;color:#15803D}.bd{background:#FEE2E2;color:#B91C1C}.bn{background:#F3F4F6;color:#6B7280}
-
-/* CHARTS */
 .cgrid{display:grid;grid-template-columns:1fr 1fr;gap:12px}
 .ccard{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:14px;box-shadow:var(--shadow)}
 .ctop{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:10px}
-.ctitle{font-size:12px;font-weight:600}
-.csub{font-size:10px;color:var(--text3);margin-top:2px}
+.ctitle{font-size:12px;font-weight:600}.csub{font-size:10px;color:var(--text3);margin-top:2px}
 .tbtns{display:flex;gap:3px}
 .tbtn{font-size:9px;padding:2px 6px;border-radius:4px;cursor:pointer;border:1px solid var(--border);background:var(--surface);color:var(--text2)}
 .tbtn.on{background:var(--accent);color:#fff;border-color:var(--accent)}
 .cwrap{position:relative;height:150px}
-.lpulse{background:linear-gradient(90deg,#F3F4F6 25%,#E5E7EB 50%,#F3F4F6 75%);background-size:200% 100%;animation:pulse 1.5s infinite;border-radius:4px;height:16px;width:65px;display:inline-block}
-@keyframes pulse{0%{background-position:200% 0}100%{background-position:-200% 0}}
-
-/* MODALS */
 .ov{display:none;position:fixed;inset:0;background:rgba(0,0,0,.5);z-index:200;align-items:center;justify-content:center}
 .ov.on{display:flex}
 .modal{background:#fff;border-radius:14px;padding:22px;width:820px;max-width:96vw;box-shadow:0 20px 60px rgba(0,0,0,.15)}
@@ -150,52 +128,37 @@ main{flex:1;overflow-y:auto;padding:18px 22px 40px}
 .macts{display:flex;gap:7px;justify-content:flex-end;margin-top:12px}
 .bcancel{padding:6px 13px;border:1px solid var(--border);border-radius:6px;background:#fff;cursor:pointer;font-size:12px}
 .bsave{padding:6px 13px;background:var(--accent);color:#fff;border:none;border-radius:6px;cursor:pointer;font-size:12px;font-weight:500}
-
-::-webkit-scrollbar{width:4px;height:4px}
-::-webkit-scrollbar-thumb{background:#E5E7EB;border-radius:2px}
+::-webkit-scrollbar{width:4px;height:4px}::-webkit-scrollbar-thumb{background:#E5E7EB;border-radius:2px}
 @media(max-width:1100px){.g5{grid-template-columns:repeat(3,1fr)}.g4{grid-template-columns:repeat(2,1fr)}.cgrid,.mgrid{grid-template-columns:1fr}}
 @media(max-width:700px){aside{display:none}.g5,.g4{grid-template-columns:repeat(2,1fr)}}
 </style>
 </head>
 <body>
 
-<!-- PASSWORD SCREEN -->
 <div id="pw-screen">
   <div class="pw-box">
     <div class="pw-logo">资</div>
-    <div class="pw-title">Margaret的资产仪表台</div>
+    <div class="pw-title">家庭资产仪表台</div>
     <div class="pw-sub">请输入访问密码</div>
-    <input class="pw-input" type="password" id="pw-input" placeholder="••••" onkeydown="if(event.key==='Enter')checkPw()"/>
-    <button class="pw-btn" onclick="checkPw()">进入</button>
-    <div class="pw-err" id="pw-err">密码错误，请重试</div>
+    <input class="pw-input" type="password" id="pwi" placeholder="••••" onkeydown="if(event.key==='Enter')chkpw()"/>
+    <button class="pw-btn" onclick="chkpw()">进入 →</button>
+    <div class="pw-err" id="pwe">密码错误，请重试</div>
   </div>
 </div>
 
-<!-- MAIN APP -->
 <div id="app">
 <header>
-  <div class="hdr-l"><div class="logo">资</div><h1>Margaret的资产仪表台</h1></div>
-  <div class="hdr-r">
-    <span id="lu">正在加载...</span>
-    <button class="btn btn-g" onclick="snap()">📸 存档</button>
-    <button class="btn btn-p" onclick="init()">↻ 刷新</button>
-  </div>
+  <div class="hdr-l"><div class="logo">资</div><h1>家庭资产仪表台</h1></div>
+  <div class="hdr-r"><span id="lu">加载中...</span><button class="btn btn-g" onclick="snap()">📸 存档</button><button class="btn btn-p" onclick="init()">↻ 刷新</button></div>
 </header>
-
 <div class="app-body">
 <aside>
-  <div class="stabs">
-    <div class="stab on" onclick="stab('j')">📝 日志</div>
-    <div class="stab" onclick="stab('s')">📦 存档</div>
-  </div>
+  <div class="stabs"><div class="stab on" onclick="stab('j')">📝 日志</div><div class="stab" onclick="stab('s')">📦 存档</div></div>
   <div class="spanel on" id="p-j">
     <div class="jlist" id="jlist"></div>
     <div class="jcompose">
       <textarea id="jtxt" placeholder="投资想法、决策依据、市场观察..."></textarea>
-      <div class="jfoot">
-        <input id="jtags" placeholder="标签，如：黄金 美债"/>
-        <button class="btn btn-p" onclick="saveJ()">保存</button>
-      </div>
+      <div class="jfoot"><input id="jtags" placeholder="标签，如：黄金 美债"/><button class="btn btn-p" onclick="saveJ()">保存</button></div>
     </div>
   </div>
   <div class="spanel" id="p-s">
@@ -203,66 +166,65 @@ main{flex:1;overflow-y:auto;padding:18px 22px 40px}
     <div class="sfoot"><button class="btn btn-p" style="width:100%" onclick="snap()">📸 立即存档</button></div>
   </div>
 </aside>
-
 <main>
   <div class="sec-hdr"><span class="sec-label">第一部分 · 实时大类资产价格</span><div class="sec-line"></div></div>
 
   <div class="sub">🇺🇸 美国市场</div>
-  <div class="g5">
-    <div class="card" onclick="oc('SPY','标普500')"><div class="cl">标普500 S&P 500</div><div class="cv" id="v-SPY"><span class="lpulse"></span></div><div class="cc neu" id="c-SPY">—</div><div class="cts" id="t-SPY"></div></div>
-    <div class="card" onclick="oc('QQQ','纳斯达克100')"><div class="cl">纳斯达克100 QQQ</div><div class="cv" id="v-QQQ"><span class="lpulse"></span></div><div class="cc neu" id="c-QQQ">—</div><div class="cts" id="t-QQQ"></div></div>
-    <div class="card" onclick="oc('DIA','道琼斯')"><div class="cl">道琼斯 DIA ETF</div><div class="cv" id="v-DIA"><span class="lpulse"></span></div><div class="cc neu" id="c-DIA">—</div><div class="cts" id="t-DIA"></div></div>
-    <div class="card" onclick="oc('IWM','罗素2000')"><div class="cl">罗素2000 IWM</div><div class="cv" id="v-IWM"><span class="lpulse"></span></div><div class="cc neu" id="c-IWM">—</div><div class="cts" id="t-IWM"></div></div>
-    <div class="card" onclick="oc('VIX','VIX恐慌指数')"><div class="cl">VIX 恐慌指数</div><div class="cv" id="v-VIX"><span class="lpulse"></span></div><div id="vbadge"></div><div class="cts" id="t-VIX"></div></div>
+  <div class="g5" id="g-us">
+    <div class="card" onclick="oc('SPY','标普500 SPY')"><div class="cl">标普500 S&P 500</div><div class="cv" id="v-SPY"><span class="lpulse"></span></div><div class="cc neu" id="c-SPY">—</div><div class="cts" id="t-SPY"></div></div>
+    <div class="card" onclick="oc('QQQ','纳斯达克100 QQQ')"><div class="cl">纳斯达克100 NDX</div><div class="cv" id="v-QQQ"><span class="lpulse"></span></div><div class="cc neu" id="c-QQQ">—</div><div class="cts" id="t-QQQ"></div></div>
+    <div class="card" onclick="oc('DIA','道琼斯 DIA')"><div class="cl">道琼斯 Dow Jones</div><div class="cv" id="v-DIA"><span class="lpulse"></span></div><div class="cc neu" id="c-DIA">—</div><div class="cts" id="t-DIA"></div></div>
+    <div class="card" onclick="oc('IWM','罗素2000 IWM')"><div class="cl">罗素2000 Russell</div><div class="cv" id="v-IWM"><span class="lpulse"></span></div><div class="cc neu" id="c-IWM">—</div><div class="cts" id="t-IWM"></div></div>
+    <div class="card" onclick="oc('%5EVIX','VIX恐慌指数')"><div class="cl">VIX 恐慌指数</div><div class="cv" id="v-VIX"><span class="lpulse"></span></div><div id="vbadge"></div><div class="cts" id="t-VIX"></div></div>
     <div class="card" onclick="oc('US10Y','十年美债')"><div class="cl">十年美债 US 10Y</div><div class="cv" id="v-US10Y"><span class="lpulse"></span></div><div class="cc neu" id="c-US10Y">—</div><div class="cts" id="t-US10Y"></div></div>
     <div class="card" onclick="oc('US2Y','两年美债')"><div class="cl">两年美债 US 2Y</div><div class="cv" id="v-US2Y"><span class="lpulse"></span></div><div class="cc neu" id="c-US2Y">—</div><div class="cts" id="t-US2Y"></div></div>
-    <div class="card" onclick="oc('SPREAD','剪刀差10Y-2Y')" style="position:relative"><div class="cl">剪刀差 10Y−2Y</div><div class="cv" id="v-SPREAD"><span class="lpulse"></span></div><div class="cc neu" id="c-SPREAD">—</div><div class="cts" id="t-SPREAD"></div><div class="sbar" id="sbar"></div></div>
-    <div class="card" onclick="oc('UUP','美元指数')"><div class="cl">美元指数 DXY</div><div class="cv" id="v-UUP"><span class="lpulse"></span></div><div class="cc neu" id="c-UUP">—</div><div class="cts" id="t-UUP"></div></div>
+    <div class="card" onclick="oc('SPREAD','剪刀差10Y-2Y')" style="position:relative"><div class="cl">剪刀差 10Y−2Y</div><div class="cv" id="v-SPREAD">—</div><div class="cc neu" id="c-SPREAD">—</div><div class="cts" id="t-SPREAD"></div><div class="sbar" id="sbar"></div></div>
+    <div class="card" onclick="oc('DX-Y.NYB','美元指数 DXY')"><div class="cl">美元指数 DXY</div><div class="cv" id="v-DXY"><span class="lpulse"></span></div><div class="cc neu" id="c-DXY">—</div><div class="cts" id="t-DXY"></div></div>
   </div>
 
   <div class="sub">🇨🇳 中国市场</div>
   <div class="g5">
-    <div class="card" onclick="oc('CSI300','沪深300')"><div class="cl">沪深300</div><div class="cv" id="v-CSI300"><span class="lpulse"></span></div><div class="cc neu" id="c-CSI300">—</div><div class="cts" id="t-CSI300"></div></div>
-    <div class="card" onclick="oc('CSI500','中证500')"><div class="cl">中证500</div><div class="cv" id="v-CSI500"><span class="lpulse"></span></div><div class="cc neu" id="c-CSI500">—</div><div class="cts" id="t-CSI500"></div></div>
-    <div class="card" onclick="oc('CSI1000','中证1000')"><div class="cl">中证1000</div><div class="cv" id="v-CSI1000"><span class="lpulse"></span></div><div class="cc neu" id="c-CSI1000">—</div><div class="cts" id="t-CSI1000"></div></div>
-    <div class="card" onclick="oc('CSIA500','中证A500')"><div class="cl">中证A500</div><div class="cv" id="v-CSIA500"><span class="lpulse"></span></div><div class="cc neu" id="c-CSIA500">—</div><div class="cts" id="t-CSIA500"></div></div>
-    <div class="card" onclick="oc('SSE50','上证50')"><div class="cl">上证50</div><div class="cv" id="v-SSE50"><span class="lpulse"></span></div><div class="cc neu" id="c-SSE50">—</div><div class="cts" id="t-SSE50"></div></div>
-    <div class="card" onclick="oc('HSI','恒生指数')"><div class="cl">恒生指数 HSI</div><div class="cv" id="v-HSI"><span class="lpulse"></span></div><div class="cc neu" id="c-HSI">—</div><div class="cts" id="t-HSI"></div></div>
-    <div class="card" onclick="oc('HSTECH','恒生科技')"><div class="cl">恒生科技 HSTECH</div><div class="cv" id="v-HSTECH"><span class="lpulse"></span></div><div class="cc neu" id="c-HSTECH">—</div><div class="cts" id="t-HSTECH"></div></div>
-    <div class="card" onclick="oc('USDCNY','人民币兑美元')"><div class="cl">人民币兑美元 CNY</div><div class="cv" id="v-USDCNY"><span class="lpulse"></span></div><div class="cc neu" id="c-USDCNY">—</div><div class="cts" id="t-USDCNY"></div></div>
+    <div class="card" onclick="oc('000300.SS','沪深300')"><div class="cl">沪深300</div><div class="cv" id="v-CSI300"><span class="lpulse"></span></div><div class="cc neu" id="c-CSI300">—</div><div class="cts" id="t-CSI300"></div></div>
+    <div class="card" onclick="oc('000905.SS','中证500')"><div class="cl">中证500</div><div class="cv" id="v-CSI500"><span class="lpulse"></span></div><div class="cc neu" id="c-CSI500">—</div><div class="cts" id="t-CSI500"></div></div>
+    <div class="card" onclick="oc('000852.SS','中证1000')"><div class="cl">中证1000</div><div class="cv" id="v-CSI1000"><span class="lpulse"></span></div><div class="cc neu" id="c-CSI1000">—</div><div class="cts" id="t-CSI1000"></div></div>
+    <div class="card" onclick="oc('000510.SS','中证A500')"><div class="cl">中证A500</div><div class="cv" id="v-CSIA500"><span class="lpulse"></span></div><div class="cc neu" id="c-CSIA500">—</div><div class="cts" id="t-CSIA500"></div></div>
+    <div class="card" onclick="oc('000016.SS','上证50')"><div class="cl">上证50</div><div class="cv" id="v-SSE50"><span class="lpulse"></span></div><div class="cc neu" id="c-SSE50">—</div><div class="cts" id="t-SSE50"></div></div>
+    <div class="card" onclick="oc('%5EHSI','恒生指数')"><div class="cl">恒生指数 HSI</div><div class="cv" id="v-HSI"><span class="lpulse"></span></div><div class="cc neu" id="c-HSI">—</div><div class="cts" id="t-HSI"></div></div>
+    <div class="card" onclick="oc('%5EHSTECH','恒生科技')"><div class="cl">恒生科技 HSTECH</div><div class="cv" id="v-HSTECH"><span class="lpulse"></span></div><div class="cc neu" id="c-HSTECH">—</div><div class="cts" id="t-HSTECH"></div></div>
+    <div class="card" onclick="oc('USDCNY=X','人民币兑美元')"><div class="cl">人民币兑美元 CNY</div><div class="cv" id="v-USDCNY"><span class="lpulse"></span></div><div class="cc neu" id="c-USDCNY">—</div><div class="cts" id="t-USDCNY"></div></div>
     <div class="card"><div class="cl">十年中国国债 CN10Y</div><div class="cv" id="v-CN10Y">—</div><div class="cc neu">手动更新</div><div class="cts" id="t-CN10Y"></div></div>
   </div>
 
   <div class="sub">🌏 亚洲市场</div>
   <div class="g5">
-    <div class="card" onclick="oc('EWJ','日经225')"><div class="cl">日本 EWJ ETF</div><div class="cv" id="v-EWJ"><span class="lpulse"></span></div><div class="cc neu" id="c-EWJ">—</div><div class="cts" id="t-EWJ"></div></div>
-    <div class="card" onclick="oc('EWY','韩国综合')"><div class="cl">韩国 EWY ETF</div><div class="cv" id="v-EWY"><span class="lpulse"></span></div><div class="cc neu" id="c-EWY">—</div><div class="cts" id="t-EWY"></div></div>
-    <div class="card" onclick="oc('EWS','新加坡STI')"><div class="cl">新加坡 EWS ETF</div><div class="cv" id="v-EWS"><span class="lpulse"></span></div><div class="cc neu" id="c-EWS">—</div><div class="cts" id="t-EWS"></div></div>
-    <div class="card" onclick="oc('INDA','印度NIFTY')"><div class="cl">印度 INDA ETF</div><div class="cv" id="v-INDA"><span class="lpulse"></span></div><div class="cc neu" id="c-INDA">—</div><div class="cts" id="t-INDA"></div></div>
-    <div class="card" onclick="oc('EWT','台湾加权')"><div class="cl">台湾 EWT ETF</div><div class="cv" id="v-EWT"><span class="lpulse"></span></div><div class="cc neu" id="c-EWT">—</div><div class="cts" id="t-EWT"></div></div>
+    <div class="card" onclick="oc('%5EN225','日经225')"><div class="cl">日经225 Nikkei</div><div class="cv" id="v-N225"><span class="lpulse"></span></div><div class="cc neu" id="c-N225">—</div><div class="cts" id="t-N225"></div></div>
+    <div class="card" onclick="oc('%5EKS11','韩国综合')"><div class="cl">韩国综合 KOSPI</div><div class="cv" id="v-KOSPI"><span class="lpulse"></span></div><div class="cc neu" id="c-KOSPI">—</div><div class="cts" id="t-KOSPI"></div></div>
+    <div class="card" onclick="oc('%5ESTI','新加坡STI')"><div class="cl">新加坡 STI</div><div class="cv" id="v-STI"><span class="lpulse"></span></div><div class="cc neu" id="c-STI">—</div><div class="cts" id="t-STI"></div></div>
+    <div class="card" onclick="oc('%5ENSEI','印度NIFTY50')"><div class="cl">印度 NIFTY 50</div><div class="cv" id="v-NIFTY"><span class="lpulse"></span></div><div class="cc neu" id="c-NIFTY">—</div><div class="cts" id="t-NIFTY"></div></div>
+    <div class="card" onclick="oc('%5ETWII','台湾加权')"><div class="cl">台湾加权 TWSE</div><div class="cv" id="v-TWSE"><span class="lpulse"></span></div><div class="cc neu" id="c-TWSE">—</div><div class="cts" id="t-TWSE"></div></div>
   </div>
 
   <div class="sub">🇪🇺 欧洲市场</div>
   <div class="g4">
-    <div class="card" onclick="oc('EWU','富时100')"><div class="cl">英国 EWU ETF</div><div class="cv" id="v-EWU"><span class="lpulse"></span></div><div class="cc neu" id="c-EWU">—</div><div class="cts" id="t-EWU"></div></div>
-    <div class="card" onclick="oc('EWG','德国DAX')"><div class="cl">德国 EWG ETF</div><div class="cv" id="v-EWG"><span class="lpulse"></span></div><div class="cc neu" id="c-EWG">—</div><div class="cts" id="t-EWG"></div></div>
-    <div class="card" onclick="oc('EWQ','法国CAC40')"><div class="cl">法国 EWQ ETF</div><div class="cv" id="v-EWQ"><span class="lpulse"></span></div><div class="cc neu" id="c-EWQ">—</div><div class="cts" id="t-EWQ"></div></div>
-    <div class="card" onclick="oc('FEZ','欧元斯托克50')"><div class="cl">欧元区 FEZ ETF</div><div class="cv" id="v-FEZ"><span class="lpulse"></span></div><div class="cc neu" id="c-FEZ">—</div><div class="cts" id="t-FEZ"></div></div>
+    <div class="card" onclick="oc('%5EFTSE','富时100')"><div class="cl">富时100 FTSE 100</div><div class="cv" id="v-FTSE"><span class="lpulse"></span></div><div class="cc neu" id="c-FTSE">—</div><div class="cts" id="t-FTSE"></div></div>
+    <div class="card" onclick="oc('%5EGDAXI','德国DAX')"><div class="cl">德国 DAX</div><div class="cv" id="v-DAX"><span class="lpulse"></span></div><div class="cc neu" id="c-DAX">—</div><div class="cts" id="t-DAX"></div></div>
+    <div class="card" onclick="oc('%5EFCHI','法国CAC40')"><div class="cl">法国 CAC 40</div><div class="cv" id="v-CAC"><span class="lpulse"></span></div><div class="cc neu" id="c-CAC">—</div><div class="cts" id="t-CAC"></div></div>
+    <div class="card" onclick="oc('%5ESTOXX50E','欧元斯托克50')"><div class="cl">欧元斯托克 50</div><div class="cv" id="v-STOXX"><span class="lpulse"></span></div><div class="cc neu" id="c-STOXX">—</div><div class="cts" id="t-STOXX"></div></div>
   </div>
 
   <div class="sub">🪨 大宗商品</div>
   <div class="g5">
-    <div class="card" onclick="oc('GLD','黄金')"><div class="cl">黄金 GLD $/share</div><div class="cv" id="v-GLD"><span class="lpulse"></span></div><div class="cc neu" id="c-GLD">—</div><div class="cts" id="t-GLD"></div></div>
-    <div class="card" onclick="oc('SLV','白银')"><div class="cl">白银 SLV $/share</div><div class="cv" id="v-SLV"><span class="lpulse"></span></div><div class="cc neu" id="c-SLV">—</div><div class="cts" id="t-SLV"></div></div>
-    <div class="card" onclick="oc('USO','WTI原油')"><div class="cl">WTI原油 USO ETF</div><div class="cv" id="v-USO"><span class="lpulse"></span></div><div class="cc neu" id="c-USO">—</div><div class="cts" id="t-USO"></div></div>
-    <div class="card" onclick="oc('BNO','布伦特原油')"><div class="cl">布伦特 BNO ETF</div><div class="cv" id="v-BNO"><span class="lpulse"></span></div><div class="cc neu" id="c-BNO">—</div><div class="cts" id="t-BNO"></div></div>
-    <div class="card" onclick="oc('CPER','铜')"><div class="cl">铜 CPER ETF</div><div class="cv" id="v-CPER"><span class="lpulse"></span></div><div class="cc neu" id="c-CPER">—</div><div class="cts" id="t-CPER"></div></div>
+    <div class="card" onclick="oc('GC=F','黄金')"><div class="cl">黄金 Gold $/oz</div><div class="cv" id="v-GOLD"><span class="lpulse"></span></div><div class="cc neu" id="c-GOLD">—</div><div class="cts" id="t-GOLD"></div></div>
+    <div class="card" onclick="oc('SI=F','白银')"><div class="cl">白银 Silver $/oz</div><div class="cv" id="v-SILVER"><span class="lpulse"></span></div><div class="cc neu" id="c-SILVER">—</div><div class="cts" id="t-SILVER"></div></div>
+    <div class="card" onclick="oc('CL=F','WTI原油')"><div class="cl">WTI 原油 $/bbl</div><div class="cv" id="v-WTI"><span class="lpulse"></span></div><div class="cc neu" id="c-WTI">—</div><div class="cts" id="t-WTI"></div></div>
+    <div class="card" onclick="oc('BZ=F','布伦特原油')"><div class="cl">布伦特 Brent $/bbl</div><div class="cv" id="v-BRENT"><span class="lpulse"></span></div><div class="cc neu" id="c-BRENT">—</div><div class="cts" id="t-BRENT"></div></div>
+    <div class="card" onclick="oc('HG=F','铜')"><div class="cl">铜 Copper $/lb</div><div class="cv" id="v-COPPER"><span class="lpulse"></span></div><div class="cc neu" id="c-COPPER">—</div><div class="cts" id="t-COPPER"></div></div>
   </div>
 
   <div class="sub">₿ 加密货币</div>
   <div class="g5" style="grid-template-columns:repeat(2,1fr);max-width:340px">
-    <div class="card" onclick="oc('BTC','比特币')"><div class="cl">比特币 Bitcoin</div><div class="cv" id="v-BTC"><span class="lpulse"></span></div><div class="cc neu" id="c-BTC">—</div><div class="cts" id="t-BTC"></div></div>
-    <div class="card" onclick="oc('ETH','以太坊')"><div class="cl">以太坊 Ethereum</div><div class="cv" id="v-ETH"><span class="lpulse"></span></div><div class="cc neu" id="c-ETH">—</div><div class="cts" id="t-ETH"></div></div>
+    <div class="card" onclick="oc('BTC-USD','比特币')"><div class="cl">比特币 Bitcoin</div><div class="cv" id="v-BTC"><span class="lpulse"></span></div><div class="cc neu" id="c-BTC">—</div><div class="cts" id="t-BTC"></div></div>
+    <div class="card" onclick="oc('ETH-USD','以太坊')"><div class="cl">以太坊 Ethereum</div><div class="cv" id="v-ETH"><span class="lpulse"></span></div><div class="cc neu" id="c-ETH">—</div><div class="cts" id="t-ETH"></div></div>
   </div>
 
   <div class="sec-hdr"><span class="sec-label">估值与股权风险溢价 ERP</span><div class="sec-line"></div><button class="ebtn" onclick="openVE()">编辑估值</button></div>
@@ -271,23 +233,23 @@ main{flex:1;overflow-y:auto;padding:18px 22px 40px}
   <div class="sec-hdr" style="margin-top:26px"><span class="sec-label">走势图</span><div class="sec-line"></div></div>
   <div class="cgrid">
     <div class="ccard">
-      <div class="ctop"><div><div class="ctitle">标普500 vs VIX</div><div class="csub">SPY vs VIX 双轴</div></div>
-      <div class="tbtns"><button class="tbtn" onclick="sr('sv','1M',this)">1M</button><button class="tbtn" onclick="sr('sv','3M',this)">3M</button><button class="tbtn on" onclick="sr('sv','1Y',this)">1Y</button><button class="tbtn" onclick="sr('sv','3Y',this)">3Y</button><button class="tbtn" onclick="sr('sv','5Y',this)">5Y</button></div></div>
+      <div class="ctop"><div><div class="ctitle">标普500 SPY vs VIX</div><div class="csub">双轴对比</div></div>
+      <div class="tbtns"><button class="tbtn" onclick="sr('sv','1mo',this)">1M</button><button class="tbtn" onclick="sr('sv','3mo',this)">3M</button><button class="tbtn on" onclick="sr('sv','1y',this)">1Y</button><button class="tbtn" onclick="sr('sv','3y',this)">3Y</button><button class="tbtn" onclick="sr('sv','5y',this)">5Y</button></div></div>
       <div class="cwrap"><canvas id="ch-sv"></canvas></div>
     </div>
     <div class="ccard">
       <div class="ctop"><div><div class="ctitle">美债剪刀差 10Y−2Y</div><div class="csub">负值=倒挂（衰退预警）</div></div>
-      <div class="tbtns"><button class="tbtn" onclick="sr('sp','1M',this)">1M</button><button class="tbtn" onclick="sr('sp','3M',this)">3M</button><button class="tbtn on" onclick="sr('sp','1Y',this)">1Y</button><button class="tbtn" onclick="sr('sp','3Y',this)">3Y</button><button class="tbtn" onclick="sr('sp','5Y',this)">5Y</button></div></div>
+      <div class="tbtns"><button class="tbtn" onclick="sr('sp','1mo',this)">1M</button><button class="tbtn" onclick="sr('sp','3mo',this)">3M</button><button class="tbtn on" onclick="sr('sp','1y',this)">1Y</button><button class="tbtn" onclick="sr('sp','3y',this)">3Y</button><button class="tbtn" onclick="sr('sp','5y',this)">5Y</button></div></div>
       <div class="cwrap"><canvas id="ch-sp"></canvas></div>
     </div>
     <div class="ccard">
-      <div class="ctop"><div><div class="ctitle">黄金 GLD</div><div class="csub">走势</div></div>
-      <div class="tbtns"><button class="tbtn" onclick="sr('go','1M',this)">1M</button><button class="tbtn" onclick="sr('go','3M',this)">3M</button><button class="tbtn on" onclick="sr('go','1Y',this)">1Y</button><button class="tbtn" onclick="sr('go','3Y',this)">3Y</button><button class="tbtn" onclick="sr('go','5Y',this)">5Y</button></div></div>
+      <div class="ctop"><div><div class="ctitle">黄金 Gold $/oz</div><div class="csub">走势</div></div>
+      <div class="tbtns"><button class="tbtn" onclick="sr('go','1mo',this)">1M</button><button class="tbtn" onclick="sr('go','3mo',this)">3M</button><button class="tbtn on" onclick="sr('go','1y',this)">1Y</button><button class="tbtn" onclick="sr('go','3y',this)">3Y</button><button class="tbtn" onclick="sr('go','5y',this)">5Y</button></div></div>
       <div class="cwrap"><canvas id="ch-go"></canvas></div>
     </div>
     <div class="ccard">
-      <div class="ctop"><div><div class="ctitle">美元指数 UUP</div><div class="csub">走势</div></div>
-      <div class="tbtns"><button class="tbtn" onclick="sr('dx','1M',this)">1M</button><button class="tbtn" onclick="sr('dx','3M',this)">3M</button><button class="tbtn on" onclick="sr('dx','1Y',this)">1Y</button><button class="tbtn" onclick="sr('dx','3Y',this)">3Y</button><button class="tbtn" onclick="sr('dx','5Y',this)">5Y</button></div></div>
+      <div class="ctop"><div><div class="ctitle">美元指数 DXY</div><div class="csub">走势</div></div>
+      <div class="tbtns"><button class="tbtn" onclick="sr('dx','1mo',this)">1M</button><button class="tbtn" onclick="sr('dx','3mo',this)">3M</button><button class="tbtn on" onclick="sr('dx','1y',this)">1Y</button><button class="tbtn" onclick="sr('dx','3y',this)">3Y</button><button class="tbtn" onclick="sr('dx','5y',this)">5Y</button></div></div>
       <div class="cwrap"><canvas id="ch-dx"></canvas></div>
     </div>
   </div>
@@ -306,12 +268,12 @@ main{flex:1;overflow-y:auto;padding:18px 22px 40px}
   <div class="modal">
     <div class="mhdr"><div class="mtit" id="dtit">走势图</div><button class="mclose" onclick="cd()">✕</button></div>
     <div class="mtbtns">
-      <button class="tbtn on" onclick="dr('1M',this)">1个月</button>
-      <button class="tbtn" onclick="dr('3M',this)">3个月</button>
-      <button class="tbtn" onclick="dr('6M',this)">6个月</button>
-      <button class="tbtn" onclick="dr('1Y',this)">1年</button>
-      <button class="tbtn" onclick="dr('3Y',this)">3年</button>
-      <button class="tbtn" onclick="dr('5Y',this)">5年</button>
+      <button class="tbtn on" onclick="dr('1mo',this)">1个月</button>
+      <button class="tbtn" onclick="dr('3mo',this)">3个月</button>
+      <button class="tbtn" onclick="dr('6mo',this)">6个月</button>
+      <button class="tbtn" onclick="dr('1y',this)">1年</button>
+      <button class="tbtn" onclick="dr('3y',this)">3年</button>
+      <button class="tbtn" onclick="dr('5y',this)">5年</button>
     </div>
     <div class="mcwrap"><canvas id="dch"></canvas></div>
   </div>
@@ -327,33 +289,29 @@ main{flex:1;overflow-y:auto;padding:18px 22px 40px}
 </div>
 
 <script>
-// ── PASSWORD ──────────────────────────────
-const PW = '1801';
-function checkPw(){
-  const v = document.getElementById('pw-input').value;
-  if(v === PW){
-    localStorage.setItem('auth', PW);
-    document.getElementById('pw-screen').style.display = 'none';
-    document.getElementById('app').style.display = 'flex';
+const PW='2013';
+const ts=()=>new Date().toLocaleString('zh-CN',{month:'2-digit',day:'2-digit',hour:'2-digit',minute:'2-digit'});
+const ls=(k,d)=>{try{const v=localStorage.getItem(k);return v?JSON.parse(v):d}catch{return d}};
+const lss=(k,v)=>{try{localStorage.setItem(k,JSON.stringify(v))}catch{}};
+
+function chkpw(){
+  if(document.getElementById('pwi').value===PW){
+    lss('auth',PW);
+    document.getElementById('pw-screen').style.display='none';
+    document.getElementById('app').style.display='flex';
     startApp();
   } else {
-    document.getElementById('pw-err').style.display = 'block';
-    document.getElementById('pw-input').value = '';
-    document.getElementById('pw-input').focus();
+    document.getElementById('pwe').style.display='block';
+    document.getElementById('pwi').value='';
+    document.getElementById('pwi').focus();
   }
 }
-// Check if already authenticated
-if(localStorage.getItem('auth') === PW){
-  document.getElementById('pw-screen').style.display = 'none';
-  document.getElementById('app').style.display = 'flex';
+if(ls('auth','')=== PW){
+  document.getElementById('pw-screen').style.display='none';
+  document.getElementById('app').style.display='flex';
 }
 
-// ── UTILS ─────────────────────────────────
-const ts = () => new Date().toLocaleString('zh-CN',{month:'2-digit',day:'2-digit',hour:'2-digit',minute:'2-digit'});
-const ls = (k,d) => {try{const v=localStorage.getItem(k);return v?JSON.parse(v):d}catch{return d}};
-const lss = (k,v) => {try{localStorage.setItem(k,JSON.stringify(v))}catch{}};
-
-// ── VALUATION ─────────────────────────────
+// VALUATION
 const dv=[
   {id:'SPX',name:'S&P 500',pe:'',pb:'',dy:'',erp:'4.23',ts:''},
   {id:'NDX',name:'纳指100',pe:'',pb:'',dy:'',erp:'',ts:''},
@@ -364,103 +322,61 @@ const dv=[
   {id:'SSE50',name:'上证50',pe:'',pb:'',dy:'',erp:'',ts:''},
   {id:'HSI',name:'恒生指数',pe:'',pb:'',dy:'',erp:'',ts:''},
 ];
-let vd = ls('vd', dv);
+let vd=ls('vd',dv);
 function rvt(){
-  document.getElementById('vrows').innerHTML = vd.map(r=>{
-    const e=parseFloat(r.erp);
-    const ec=!r.erp?'':e>=4?'eh':e>=2?'em':'el';
+  document.getElementById('vrows').innerHTML=vd.map(r=>{
+    const e=parseFloat(r.erp),ec=!r.erp?'':e>=4?'eh':e>=2?'em':'el';
     return`<div class="vrow"><div><div class="vname">${r.name}</div></div><div class="vcell">${r.pe||'—'}</div><div class="vcell">${r.pb||'—'}</div><div class="vcell">${r.dy||'—'}</div><div class="vcell verp ${ec}">${r.erp?r.erp+'%':'—'}</div><div class="vcell"><div class="evts">${r.ts||'未更新'}</div></div></div>`;
   }).join('');
 }
 
-// ── MACRO ─────────────────────────────────
+// MACRO
 const dm={
-  us:[
-    {k:'gdp',l:'GDP增长率',v:'2.4%',d:'2026 Q1',dir:'up'},
-    {k:'cpi',l:'CPI通胀率',v:'3.1%',d:'2026-07',dir:'down'},
-    {k:'ccpi',l:'核心CPI',v:'3.0%',d:'2026-07',dir:'neutral'},
-    {k:'nfp',l:'非农就业（万）',v:'+17.7',d:'2026-07',dir:'up'},
-    {k:'ic',l:'初请失业金（万）',v:'23.0',d:'2026-08',dir:'neutral'},
-    {k:'cc',l:'续请失业金（万）',v:'185.0',d:'2026-08',dir:'neutral'},
-    {k:'pm',l:'PMI制造业',v:'49.6',d:'2026-07',dir:'down'},
-    {k:'ps',l:'PMI服务业',v:'53.5',d:'2026-07',dir:'up'},
-    {k:'fed',l:'联邦基金利率',v:'4.25–4.50%',d:'2026-07',dir:'neutral'},
-    {k:'ret',l:'零售销售 MoM',v:'+0.6%',d:'2026-07',dir:'up'},
-  ],
-  cn:[
-    {k:'gdp',l:'GDP增长率',v:'4.6%',d:'2026 Q2',dir:'neutral'},
-    {k:'cpi',l:'CPI通胀率',v:'0.2%',d:'2026-07',dir:'neutral'},
-    {k:'ppi',l:'PPI生产者价格',v:'-1.5%',d:'2026-07',dir:'down'},
-    {k:'pm',l:'PMI制造业（官方）',v:'49.4',d:'2026-07',dir:'down'},
-    {k:'ps',l:'PMI服务业（财新）',v:'51.2',d:'2026-07',dir:'up'},
-    {k:'m2',l:'M2货币供应 YoY',v:'7.3%',d:'2026-07',dir:'neutral'},
-    {k:'tsf',l:'社融规模（亿元）',v:'13,200',d:'2026-07',dir:'neutral'},
-    {k:'ln',l:'新增贷款（亿元）',v:'8,100',d:'2026-07',dir:'neutral'},
-    {k:'exp',l:'出口增速 YoY',v:'+5.4%',d:'2026-07',dir:'up'},
-    {k:'fx',l:'外汇储备（万亿$）',v:'3.28',d:'2026-07',dir:'neutral'},
-  ]
+  us:[{k:'gdp',l:'GDP增长率',v:'2.4%',d:'2026 Q1',dir:'up'},{k:'cpi',l:'CPI通胀率',v:'3.1%',d:'2026-07',dir:'down'},{k:'ccpi',l:'核心CPI',v:'3.0%',d:'2026-07',dir:'neutral'},{k:'nfp',l:'非农就业（万）',v:'+17.7',d:'2026-07',dir:'up'},{k:'ic',l:'初请失业金（万）',v:'23.0',d:'2026-08',dir:'neutral'},{k:'cc',l:'续请失业金（万）',v:'185.0',d:'2026-08',dir:'neutral'},{k:'pm',l:'PMI制造业',v:'49.6',d:'2026-07',dir:'down'},{k:'ps',l:'PMI服务业',v:'53.5',d:'2026-07',dir:'up'},{k:'fed',l:'联邦基金利率',v:'4.25–4.50%',d:'2026-07',dir:'neutral'},{k:'ret',l:'零售销售 MoM',v:'+0.6%',d:'2026-07',dir:'up'}],
+  cn:[{k:'gdp',l:'GDP增长率',v:'4.6%',d:'2026 Q2',dir:'neutral'},{k:'cpi',l:'CPI通胀率',v:'0.2%',d:'2026-07',dir:'neutral'},{k:'ppi',l:'PPI生产者价格',v:'-1.5%',d:'2026-07',dir:'down'},{k:'pm',l:'PMI制造业（官方）',v:'49.4',d:'2026-07',dir:'down'},{k:'ps',l:'PMI服务业（财新）',v:'51.2',d:'2026-07',dir:'up'},{k:'m2',l:'M2货币供应 YoY',v:'7.3%',d:'2026-07',dir:'neutral'},{k:'tsf',l:'社融规模（亿元）',v:'13,200',d:'2026-07',dir:'neutral'},{k:'ln',l:'新增贷款（亿元）',v:'8,100',d:'2026-07',dir:'neutral'},{k:'exp',l:'出口增速 YoY',v:'+5.4%',d:'2026-07',dir:'up'},{k:'fx',l:'外汇储备（万亿$）',v:'3.28',d:'2026-07',dir:'neutral'}]
 };
-let md = ls('md', dm);
+let md=ls('md',dm);
 function rm(r){
-  document.getElementById(`${r}-m`).innerHTML = md[r].map(x=>`
-    <div class="mrow">
-      <span class="mname">${x.l}</span>
-      <div style="text-align:right">
-        <div class="mval">${x.v}<span class="badge ${x.dir==='up'?'bu':x.dir==='down'?'bd':'bn'}">${x.dir==='up'?'↑':x.dir==='down'?'↓':'—'}</span></div>
-        <div class="mmeta">${x.d}</div>
-      </div>
-    </div>`).join('');
+  document.getElementById(`${r}-m`).innerHTML=md[r].map(x=>`
+    <div class="mrow"><span class="mname">${x.l}</span>
+    <div style="text-align:right"><div class="mval">${x.v}<span class="badge ${x.dir==='up'?'bu':x.dir==='down'?'bd':'bn'}">${x.dir==='up'?'↑':x.dir==='down'?'↓':'—'}</span></div>
+    <div class="mmeta">${x.d}</div></div></div>`).join('');
 }
 
-// ── CARD HELPERS ──────────────────────────
+// CARD HELPERS
 const fmt=(n,d=2)=>{
   if(n==null||isNaN(n))return'—';
   if(Math.abs(n)>=10000)return n.toLocaleString('en-US',{maximumFractionDigits:0});
   if(Math.abs(n)>=1000)return n.toLocaleString('en-US',{maximumFractionDigits:1});
   return n.toFixed(d);
 };
-function sc(id,val,chg,pct,sfx='',t=''){
-  const v=document.getElementById('v-'+id);
-  const c=document.getElementById('c-'+id);
-  const ts=document.getElementById('t-'+id);
-  if(v){v.innerHTML='';v.textContent=(val!=null?fmt(val)+sfx:'—')}
-  if(c&&chg!=null){
-    const d=chg>0?'up':chg<0?'down':'neu';
-    c.className=`cc ${d}`;
-    c.textContent=`${chg>0?'+':''}${fmt(chg)} (${chg>0?'+':''}${fmt(pct)}%)`;
-  }
+function sc(id,val,chg,pct,t=''){
+  const v=document.getElementById('v-'+id),c=document.getElementById('c-'+id),ts=document.getElementById('t-'+id);
+  if(v){v.innerHTML='';v.textContent=val!=null?fmt(val):'—'}
+  if(c&&chg!=null){c.className=`cc ${chg>0?'up':chg<0?'down':'neu'}`;c.textContent=`${chg>0?'+':''}${fmt(chg)} (${chg>0?'+':''}${fmt(pct)}%)`}
   if(ts&&t)ts.textContent=`更新 ${t}`;
 }
 function svix(val,t){
-  const v=document.getElementById('v-VIX');
-  const b=document.getElementById('vbadge');
-  const ts=document.getElementById('t-VIX');
+  const v=document.getElementById('v-VIX'),b=document.getElementById('vbadge'),ts=document.getElementById('t-VIX');
   if(v){v.innerHTML='';v.textContent=val?fmt(val):'—'}
-  if(b&&val){
-    const c=val<15?'vl':val<25?'vm':val<35?'vh':'vx';
-    const l=val<15?'平静':val<25?'警觉':val<35?'恐慌':'极度恐慌';
-    b.innerHTML=`<span class="vbadge ${c}">${l}</span>`;
-  }
+  if(b&&val){const c=val<15?'vl':val<25?'vm':val<35?'vh':'vx';const l=val<15?'平静':val<25?'警觉':val<35?'恐慌':'极度恐慌';b.innerHTML=`<span class="vbadge ${c}">${l}</span>`}
   if(ts&&t)ts.textContent=`更新 ${t}`;
 }
-function ssp(ten,two,t){
-  const sp=ten&&two?+(ten-two).toFixed(3):null;
-  const v=document.getElementById('v-SPREAD');
-  const c=document.getElementById('c-SPREAD');
-  const bar=document.getElementById('sbar');
-  const ts=document.getElementById('t-SPREAD');
+function ssp(t10v,t2v,t){
+  const sp=t10v&&t2v?+(t10v-t2v).toFixed(3):null;
+  const v=document.getElementById('v-SPREAD'),c=document.getElementById('c-SPREAD'),bar=document.getElementById('sbar'),ts=document.getElementById('t-SPREAD');
   if(v){v.innerHTML='';v.textContent=sp!=null?(sp>=0?'+':'')+sp.toFixed(2)+'%':'—'}
   if(c){c.className=`cc ${sp>=0?'up':'down'}`;c.textContent=sp>=0?'正常（未倒挂）':'⚠️ 倒挂（衰退预警）'}
   if(bar)bar.className=`sbar ${sp>=0?'sp':'sn'}`;
   if(ts&&t)ts.textContent=`更新 ${t}`;
 }
 
-// ── API CALLS ─────────────────────────────
-async function fhq(sym){
-  try{const r=await fetch(`/api/quote?symbol=${encodeURIComponent(sym)}`);return await r.json()}catch{return null}
-}
-async function fhc(sym,from,to,res='D'){
-  try{const r=await fetch(`/api/candle?symbol=${encodeURIComponent(sym)}&from=${from}&to=${to}&resolution=${res}`);return await r.json()}catch{return null}
+// API - all via Yahoo proxy
+async function yq(sym,range='5d'){
+  try{
+    const r=await fetch(`/api/yahoo?symbol=${encodeURIComponent(sym)}&range=${range}&interval=1d`);
+    return await r.json();
+  }catch{return null}
 }
 async function fred(series,limit=5,start=''){
   try{
@@ -469,167 +385,133 @@ async function fred(series,limit=5,start=''){
     const r=await fetch(u);return await r.json();
   }catch{return null}
 }
-async function yahoo(sym,range='5d'){
-  try{const r=await fetch(`/api/yahoo?symbol=${encodeURIComponent(sym)}&range=${range}`);return await r.json()}catch{return null}
-}
-async function cryptoFetch(){
-  try{const r=await fetch('https://api.coingecko.com/api/v3/simple/price?ids=bitcoin,ethereum&vs_currencies=usd&include_24hr_change=true');return await r.json()}catch{return{}}
+
+function parseQuote(j){
+  const q=j?.chart?.result?.[0];if(!q)return null;
+  const p=q.meta.regularMarketPrice;
+  const prev=q.meta.previousClose||q.meta.chartPreviousClose||p;
+  return{price:p,prev,chg:p-prev,pct:prev?(p-prev)/prev*100:0};
 }
 
-// US ETFs via Finnhub (these work on free tier)
-const FH_US = ['SPY','QQQ','DIA','IWM','VIX','UUP','GLD','SLV','USO','BNO','CPER','EWJ','EWY','EWS','INDA','EWT','EWU','EWG','EWQ','FEZ'];
-const YH_CN = {CSI300:'000300.SS',CSI500:'000905.SS',CSI1000:'000852.SS',CSIA500:'000510.SS',SSE50:'000016.SS',HSI:'^HSI',HSTECH:'^HSTECH',USDCNY:'USDCNY=X'};
+// Symbol map: card-id -> yahoo symbol
+const SYM={
+  SPY:'SPY',QQQ:'QQQ',DIA:'DIA',IWM:'IWM',
+  VIX:'%5EVIX',
+  DXY:'DX-Y.NYB',
+  CSI300:'000300.SS',CSI500:'000905.SS',CSI1000:'000852.SS',CSIA500:'000510.SS',SSE50:'000016.SS',
+  HSI:'%5EHSI',HSTECH:'%5EHSTECH',USDCNY:'USDCNY=X',
+  N225:'%5EN225',KOSPI:'%5EKS11',STI:'%5ESTI',NIFTY:'%5ENSEI',TWSE:'%5ETWII',
+  FTSE:'%5EFTSE',DAX:'%5EGDAXI',CAC:'%5EFCHI',STOXX:'%5ESTOXX50E',
+  GOLD:'GC=F',SILVER:'SI=F',WTI:'CL=F',BRENT:'BZ=F',COPPER:'HG=F',
+  BTC:'BTC-USD',ETH:'ETH-USD',
+};
 
-let t10=null, t2=null;
+let t10=null,t2=null;
 
 async function init(){
-  const now = ts();
-  document.getElementById('lu').textContent = '正在刷新...';
+  const now=ts();
+  document.getElementById('lu').textContent='正在刷新...';
 
-  // FRED treasuries
-  const [f10,f2] = await Promise.all([fred('DGS10',5), fred('DGS2',5)]);
-  const getLatest = j => {const obs=j?.observations?.filter(o=>o.value!='.')||[];return obs.length?parseFloat(obs[0].value):null};
-  t10 = getLatest(f10); t2 = getLatest(f2);
-  if(t10) sc('US10Y', t10, null, null, '%', now);
-  if(t2)  sc('US2Y',  t2,  null, null, '%', now);
-  ssp(t10, t2, now);
+  // FRED for US treasuries (most reliable)
+  const [f10,f2]=await Promise.all([fred('DGS10',5),fred('DGS2',5)]);
+  const gl=j=>{const o=j?.observations?.filter(o=>o.value!='.')||[];return o.length?parseFloat(o[0].value):null};
+  t10=gl(f10);t2=gl(f2);
+  if(t10)sc('US10Y',t10,null,null,now);
+  if(t2)sc('US2Y',t2,null,null,now);
+  ssp(t10,t2,now);
 
-  // Finnhub US ETFs
-  await Promise.all(FH_US.map(async sym => {
-    const q = await fhq(sym);
-    if(!q || !q.c) return;
-    const chg = q.c - q.pc, pct = q.pc ? chg/q.pc*100 : 0;
-    if(sym === 'VIX') svix(q.c, now);
-    else sc(sym, q.c, chg, pct, '', now);
+  // All other prices via Yahoo
+  await Promise.all(Object.entries(SYM).map(async([id,sym])=>{
+    const j=await yq(sym,'5d');
+    const q=parseQuote(j);if(!q)return;
+    if(id==='VIX')svix(q.price,now);
+    else sc(id,q.price,q.chg,q.pct,now);
   }));
 
-  // Yahoo CN indices
-  await Promise.all(Object.entries(YH_CN).map(async([id,sym]) => {
-    const j = await yahoo(sym, '5d');
-    const q = j?.chart?.result?.[0];
-    if(!q) return;
-    const p = q.meta.regularMarketPrice;
-    const prev = q.meta.previousClose || q.meta.chartPreviousClose;
-    const chg = p - prev, pct = prev ? chg/prev*100 : 0;
-    sc(id, p, chg, pct, '', now);
-  }));
-
-  // Crypto
-  const cr = await cryptoFetch();
-  if(cr.bitcoin){
-    const p=cr.bitcoin.usd, c=cr.bitcoin.usd_24h_change;
-    const v=document.getElementById('v-BTC');const cc=document.getElementById('c-BTC');const t=document.getElementById('t-BTC');
-    if(v){v.innerHTML='';v.textContent='$'+Math.round(p).toLocaleString()}
-    if(cc){cc.className=`cc ${c>0?'up':c<0?'down':'neu'}`;cc.textContent=`${c>0?'+':''}${c.toFixed(2)}%`}
-    if(t)t.textContent=`更新 ${now}`;
-  }
-  if(cr.ethereum){
-    const p=cr.ethereum.usd, c=cr.ethereum.usd_24h_change;
-    const v=document.getElementById('v-ETH');const cc=document.getElementById('c-ETH');const t=document.getElementById('t-ETH');
-    if(v){v.innerHTML='';v.textContent='$'+Math.round(p).toLocaleString()}
-    if(cc){cc.className=`cc ${c>0?'up':c<0?'down':'neu'}`;cc.textContent=`${c>0?'+':''}${c.toFixed(2)}%`}
-    if(t)t.textContent=`更新 ${now}`;
-  }
-
-  document.getElementById('lu').textContent = `上次刷新 ${now}`;
-  rvt(); loadCharts();
+  document.getElementById('lu').textContent=`上次刷新 ${now}`;
+  rvt();loadCharts();
 }
 
-// ── CHARTS ────────────────────────────────
-const charts = {};
-const ranges = {sv:'1Y', sp:'1Y', go:'1Y', dx:'1Y'};
-const r2f = r => {const t=Math.floor(Date.now()/1000);const m={'1M':30,'3M':90,'6M':180,'1Y':365,'3Y':1095,'5Y':1825};return t-(m[r]||365)*86400};
-const r2res = r => ['1M','3M'].includes(r)?'D':'W';
+// CHARTS
+const charts={};
+const ranges={sv:'1y',sp:'1y',go:'1y',dx:'1y'};
+const ri2iv=r=>['1mo','3mo'].includes(r)?'1d':'1wk';
 
-async function getFHc(sym, range){
-  const to=Math.floor(Date.now()/1000), from=r2f(range), res=r2res(range);
-  const d = await fhc(sym, from, to, res);
-  if(!d || d.s!=='ok') return null;
-  return{labels:d.t.map(t=>new Date(t*1000).toLocaleDateString('zh-CN',{month:'2-digit',day:'2-digit'})), closes:d.c};
+async function getYHist(sym,range){
+  const j=await yq(sym,range);
+  const q=j?.chart?.result?.[0];if(!q)return null;
+  const closes=q.indicators?.quote?.[0]?.close||[];
+  const labs=q.timestamp?.map(t=>new Date(t*1000).toLocaleDateString('zh-CN',{month:'2-digit',day:'2-digit'}))||[];
+  return{labels:labs,closes};
 }
-async function getFREDhist(range){
-  const days={'1M':30,'3M':90,'6M':180,'1Y':365,'3Y':1095,'5Y':1825}[range]||365;
-  const start = new Date(Date.now()-days*86400000).toISOString().slice(0,10);
-  const [j10,j2] = await Promise.all([fred('DGS10',500,start), fred('DGS2',500,start)]);
-  const obs10 = j10?.observations?.filter(o=>o.value!='.')||[];
-  const obs2  = j2?.observations?.filter(o=>o.value!='.')||[];
-  const m2 = {}; obs2.forEach(o=>m2[o.date]=parseFloat(o.value));
-  const merged = obs10.filter(o=>m2[o.date]!=null).map(o=>({date:o.date, val:+(parseFloat(o.value)-m2[o.date]).toFixed(3)}));
-  return{labels:merged.map(m=>m.date.slice(5)), closes:merged.map(m=>m.val)};
+async function getFREDsp(range){
+  const days={'1mo':30,'3mo':90,'6mo':180,'1y':365,'3y':1095,'5y':1825}[range]||365;
+  const start=new Date(Date.now()-days*86400000).toISOString().slice(0,10);
+  const [j10,j2]=await Promise.all([fred('DGS10',500,start),fred('DGS2',500,start)]);
+  const o10=j10?.observations?.filter(o=>o.value!='.')||[];
+  const o2=j2?.observations?.filter(o=>o.value!='.')||[];
+  const m2={};o2.forEach(o=>m2[o.date]=parseFloat(o.value));
+  const merged=o10.filter(o=>m2[o.date]!=null).map(o=>({date:o.date,val:+(parseFloat(o.value)-m2[o.date]).toFixed(3)}));
+  return{labels:merged.map(m=>m.date.slice(5)),closes:merged.map(m=>m.val)};
 }
 function mkChart(id,labels,datasets,dual=false){
   if(charts[id])charts[id].destroy();
   charts[id]=new Chart(document.getElementById(id).getContext('2d'),{
-    type:'line', data:{labels,datasets},
-    options:{responsive:true,maintainAspectRatio:false,
-      interaction:{mode:'index',intersect:false},
+    type:'line',data:{labels,datasets},
+    options:{responsive:true,maintainAspectRatio:false,interaction:{mode:'index',intersect:false},
       plugins:{legend:{display:dual,labels:{font:{size:9},boxWidth:9,padding:5}},tooltip:{bodyFont:{family:'monospace',size:9}}},
-      scales:{
-        x:{ticks:{font:{size:8},maxTicksLimit:8,color:'#9CA3AF'},grid:{display:false}},
+      scales:{x:{ticks:{font:{size:8},maxTicksLimit:8,color:'#9CA3AF'},grid:{display:false}},
         y:{position:'left',ticks:{font:{size:8},color:'#6B7280',maxTicksLimit:5},grid:{color:'#F3F4F6'}},
-        ...(dual?{y1:{position:'right',ticks:{font:{size:8},color:'#DC2626',maxTicksLimit:5},grid:{display:false}}}:{})
-      }}
+        ...(dual?{y1:{position:'right',ticks:{font:{size:8},color:'#DC2626',maxTicksLimit:5},grid:{display:false}}}:{})}}
   });
 }
 function ds(label,data,color,yId='y',dash=false){
   return{label,data,borderColor:color,backgroundColor:color.replace(')',',0.07)').replace('rgb','rgba'),borderWidth:1.5,pointRadius:0,tension:.3,fill:!dash,yAxisID:yId,...(dash?{borderDash:[4,3]}:{})};
 }
 async function loadCharts(){
-  const [sx,vx] = await Promise.all([getFHc('SPY',ranges.sv), getFHc('UVXY',ranges.sv)]);
-  if(sx) mkChart('ch-sv', sx.labels, [ds('SPY',sx.closes,'rgb(37,99,235)','y'), ds('VIX',vx?.closes||[],'rgb(220,38,38)','y1',true)], true);
-  const sp = await getFREDhist(ranges.sp);
-  if(sp){const last=sp.closes[sp.closes.length-1]; mkChart('ch-sp',sp.labels,[ds('10Y-2Y%',sp.closes,last>=0?'rgb(22,163,74)':'rgb(220,38,38)')])}
-  const go = await getFHc('GLD', ranges.go);
-  if(go) mkChart('ch-go', go.labels, [ds('GLD',go.closes,'rgb(217,119,6)')]);
-  const dx = await getFHc('UUP', ranges.dx);
-  if(dx) mkChart('ch-dx', dx.labels, [ds('UUP',dx.closes,'rgb(124,58,237)')]);
+  const [sx,vx]=await Promise.all([getYHist('SPY',ranges.sv),getYHist('%5EVIX',ranges.sv)]);
+  if(sx)mkChart('ch-sv',sx.labels,[ds('SPY',sx.closes,'rgb(37,99,235)','y'),ds('VIX',vx?.closes||[],'rgb(220,38,38)','y1',true)],true);
+  const sp=await getFREDsp(ranges.sp);
+  if(sp){const last=sp.closes[sp.closes.length-1];mkChart('ch-sp',sp.labels,[ds('10Y-2Y%',sp.closes,last>=0?'rgb(22,163,74)':'rgb(220,38,38)')])}
+  const go=await getYHist('GC=F',ranges.go);
+  if(go)mkChart('ch-go',go.labels,[ds('Gold',go.closes,'rgb(217,119,6)')]);
+  const dx=await getYHist('DX-Y.NYB',ranges.dx);
+  if(dx)mkChart('ch-dx',dx.labels,[ds('DXY',dx.closes,'rgb(124,58,237)')]);
 }
 async function sr(id,range,btn){
   ranges[id]=range;
   btn.closest('.tbtns').querySelectorAll('.tbtn').forEach(b=>b.classList.remove('on'));
-  btn.classList.add('on');
-  await loadCharts();
+  btn.classList.add('on');await loadCharts();
 }
 
-// ── DETAIL CHART ──────────────────────────
-let dsym='', dch=null;
-async function oc(id, label){
-  dsym=id;
-  document.getElementById('dtit').textContent = label+' · 走势图';
+// DETAIL CHART
+let dsym='',dch=null,dcurSym='';
+async function oc(sym,label){
+  dcurSym=sym;
+  document.getElementById('dtit').textContent=label+' · 走势图';
   document.getElementById('dov').classList.add('on');
-  document.querySelectorAll('.mtbtns .tbtn').forEach((b,i)=>{b.classList.toggle('on',i===0)});
-  await ld('1M');
+  document.querySelectorAll('.mtbtns .tbtn').forEach((b,i)=>b.classList.toggle('on',i===0));
+  await ld('1mo');
 }
 function cd(){document.getElementById('dov').classList.remove('on');if(dch){dch.destroy();dch=null}}
 async function dr(r,btn){
   document.querySelectorAll('.mtbtns .tbtn').forEach(b=>b.classList.remove('on'));
-  btn.classList.add('on'); await ld(r);
+  btn.classList.add('on');await ld(r);
 }
 async function ld(range){
-  let data = null;
-  const ynMap={CSI300:'000300.SS',CSI500:'000905.SS',CSI1000:'000852.SS',CSIA500:'000510.SS',SSE50:'000016.SS',HSI:'^HSI',HSTECH:'^HSTECH'};
-  if(ynMap[dsym]){
-    const rng=range==='1M'?'1mo':range==='3M'?'3mo':range==='6M'?'6mo':range==='1Y'?'1y':range==='3Y'?'3y':'5y';
-    const j=await yahoo(ynMap[dsym], rng);
-    const q=j?.chart?.result?.[0];
-    if(q){const closes=q.indicators?.quote?.[0]?.close||[];const labs=q.timestamp?.map(t=>new Date(t*1000).toLocaleDateString('zh-CN',{month:'2-digit',day:'2-digit'}))||[];data={labels:labs,closes}}
-  } else if(dsym==='US10Y'){
-    data = await getFREDhist(range);
-  } else {
-    data = await getFHc(dsym, range);
-  }
+  const data=dcurSym==='US10Y'?await getFREDsp(range):await getYHist(dcurSym,range);
   if(!data)return;
   if(dch)dch.destroy();
   const last=data.closes.filter(Boolean).slice(-1)[0];
   const first=data.closes.find(v=>v!=null);
   const color=last>=first?'rgb(22,163,74)':'rgb(220,38,38)';
   dch=new Chart(document.getElementById('dch').getContext('2d'),{
-    type:'line',data:{labels:data.labels,datasets:[{label:dsym,data:data.closes,borderColor:color,backgroundColor:color.replace(')',',0.07)').replace('rgb','rgba'),borderWidth:2,pointRadius:0,tension:.3,fill:true}]},
+    type:'line',data:{labels:data.labels,datasets:[{label:dcurSym,data:data.closes,borderColor:color,backgroundColor:color.replace(')',',0.07)').replace('rgb','rgba'),borderWidth:2,pointRadius:0,tension:.3,fill:true}]},
     options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false},tooltip:{bodyFont:{family:'monospace',size:10}}},scales:{x:{ticks:{font:{size:9},maxTicksLimit:12,color:'#9CA3AF'},grid:{display:false}},y:{ticks:{font:{size:9},color:'#6B7280',maxTicksLimit:6},grid:{color:'#F3F4F6'}}}}
   });
 }
 
-// ── EDIT MODALS ───────────────────────────
+// EDIT MODALS
 let ectx=null;
 function openVE(){
   ectx='val';document.getElementById('etit').textContent='编辑估值与ERP';
@@ -678,7 +560,7 @@ function se(){
   ce();
 }
 
-// ── SIDEBAR ───────────────────────────────
+// SIDEBAR
 function stab(t){
   document.querySelectorAll('.stab').forEach(x=>x.classList.remove('on'));
   document.querySelectorAll('.spanel').forEach(x=>x.classList.remove('on'));
@@ -686,87 +568,61 @@ function stab(t){
   document.getElementById('p-'+t).classList.add('on');
 }
 
-// ── JOURNAL ───────────────────────────────
-let journals = ls('journals',[]);
+// JOURNAL
+let journals=ls('journals',[]);
 function rj(){
   const el=document.getElementById('jlist');
   if(!journals.length){el.innerHTML='<div style="text-align:center;color:var(--text3);font-size:11px;padding:18px">暂无记录</div>';return}
   el.innerHTML=[...journals].reverse().map((j,i)=>`
     <div class="jentry" onclick="vj(${journals.length-1-i})">
-      <div class="jdate">${j.ts}</div>
-      <div class="jprev">${j.text}</div>
+      <div class="jdate">${j.ts}</div><div class="jprev">${j.text}</div>
       ${j.tags.length?`<div class="jtags">${j.tags.map(t=>`<span class="jtag">${t}</span>`).join('')}</div>`:''}
     </div>`).join('');
 }
 function saveJ(){
   const text=document.getElementById('jtxt').value.trim();if(!text)return;
   const tags=document.getElementById('jtags').value.split(/[,，\s]+/).filter(Boolean);
-  journals.push({text,tags,ts:ts(),snap:gsnap()});
-  lss('journals',journals);
-  document.getElementById('jtxt').value='';document.getElementById('jtags').value='';
-  rj();
+  journals.push({text,tags,ts:ts(),snap:gsnap()});lss('journals',journals);
+  document.getElementById('jtxt').value='';document.getElementById('jtags').value='';rj();
 }
-function vj(i){
-  const j=journals[i];
-  alert(`[${j.ts}]\n\n${j.text}${j.tags.length?'\n\n标签: '+j.tags.join(', '):''}${j.snap?'\n\n──快照──\n'+j.snap:''}`);
-}
+function vj(i){const j=journals[i];alert(`[${j.ts}]\n\n${j.text}${j.tags.length?'\n\n标签: '+j.tags.join(', '):''}${j.snap?'\n\n──快照──\n'+j.snap:''}`)}
 
-// ── SNAPSHOTS ─────────────────────────────
-let snaps = ls('snaps',[]);
+// SNAPSHOTS
+let snaps=ls('snaps',[]);
 function gsnap(){
-  return['SPY','QQQ','VIX','US10Y','GLD','USO','BTC'].map(id=>{
-    const v=document.getElementById('v-'+id);
-    return v&&v.textContent&&v.textContent!=='—'?`${id}:${v.textContent}`:'';
+  return['SPY','QQQ','VIX','US10Y','GOLD','WTI','BTC'].map(id=>{
+    const v=document.getElementById('v-'+id);return v&&v.textContent&&v.textContent!=='—'?`${id}:${v.textContent}`:'';
   }).filter(Boolean).join(' | ');
 }
 function snap(){
   const full={};
-  ['SPY','QQQ','DIA','IWM','VIX','US10Y','US2Y','GLD','SLV','USO','BTC','ETH','UUP','USDCNY','CSI300','CSI500'].forEach(id=>{
+  ['SPY','QQQ','DIA','IWM','VIX','US10Y','US2Y','GOLD','SILVER','WTI','BTC','ETH','DXY','USDCNY','CSI300','CSI500'].forEach(id=>{
     const v=document.getElementById('v-'+id);const c=document.getElementById('c-'+id);
     if(v)full[id]={val:v.textContent,chg:c?c.textContent:''};
   });
-  snaps.unshift({ts:ts(),summary:gsnap(),full});
-  if(snaps.length>50)snaps=snaps.slice(0,50);
+  snaps.unshift({ts:ts(),summary:gsnap(),full});if(snaps.length>50)snaps=snaps.slice(0,50);
   lss('snaps',snaps);rs();stab('s');
 }
 function rs(){
   const el=document.getElementById('slist');
   if(!snaps.length){el.innerHTML='<div style="text-align:center;color:var(--text3);font-size:11px;padding:18px">暂无存档</div>';return}
   el.innerHTML=snaps.map((s,i)=>`
-    <div class="sitem">
-      <div class="sdate">${s.ts}</div>
-      <div class="ssummary">${s.summary||'—'}</div>
-      <div class="sacts">
-        <button class="sbtn" onclick="epdf(${i})">导出PDF</button>
-        <button class="sbtn" onclick="ds2(${i})" style="color:var(--down)">删除</button>
-      </div>
-    </div>`).join('');
+    <div class="sitem"><div class="sdate">${s.ts}</div><div class="ssummary">${s.summary||'—'}</div>
+    <div class="sacts"><button class="sbtn" onclick="epdf(${i})">导出PDF</button><button class="sbtn" onclick="ds2(${i})" style="color:var(--down)">删除</button></div></div>`).join('');
 }
 function ds2(i){snaps.splice(i,1);lss('snaps',snaps);rs()}
 function epdf(i){
-  const s=snaps[i];
-  const w=window.open('','_blank');
+  const s=snaps[i];const w=window.open('','_blank');
   const rows=Object.entries(s.full||{}).map(([k,v])=>`<tr><td>${k}</td><td>${v.val}</td><td>${v.chg}</td></tr>`).join('');
-  w.document.write(`<!DOCTYPE html><html><head><meta charset="UTF-8"><title>快照 ${s.ts}</title>
-  <style>body{font-family:sans-serif;padding:28px}h2{margin-bottom:8px}p{color:#666;margin-bottom:16px}table{width:100%;border-collapse:collapse}td,th{border:1px solid #ddd;padding:7px;font-size:13px}th{background:#f5f5f5}</style></head>
-  <body><h2>资产仪表台快照</h2><p>时间：${s.ts}</p>
-  <table><tr><th>指标</th><th>价格</th><th>涨跌</th></tr>${rows}</table>
-  <script>window.onload=()=>window.print()<\/script></body></html>`);
+  w.document.write(`<!DOCTYPE html><html><head><meta charset="UTF-8"><title>快照 ${s.ts}</title><style>body{font-family:sans-serif;padding:28px}h2{margin-bottom:8px}p{color:#666;margin-bottom:16px}table{width:100%;border-collapse:collapse}td,th{border:1px solid #ddd;padding:7px;font-size:13px}th{background:#f5f5f5}</style></head><body><h2>家庭资产仪表台快照</h2><p>时间：${s.ts}</p><table><tr><th>指标</th><th>价格</th><th>涨跌</th></tr>${rows}</table><script>window.onload=()=>window.print()<\/script></body></html>`);
   w.document.close();
 }
 
-// ── CLOSE MODALS ON BG ────────────────────
 document.getElementById('dov').addEventListener('click',e=>{if(e.target===document.getElementById('dov'))cd()});
 document.getElementById('eov').addEventListener('click',e=>{if(e.target===document.getElementById('eov'))ce()});
 
-// ── START ─────────────────────────────────
-function startApp(){
-  rvt(); rm('us'); rm('cn'); rj(); rs();
-  init();
-  setInterval(init, 5*60*1000);
-}
-// If already logged in, start immediately
-if(localStorage.getItem('auth') === PW) startApp();
+function startApp(){rvt();rm('us');rm('cn');rj();rs();init();setInterval(init,5*60*1000)}
+if(ls('auth','')=== PW)startApp();
 </script>
 </body>
 </html>
