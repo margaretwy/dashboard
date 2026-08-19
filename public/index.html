@@ -441,10 +441,28 @@ function ssp(t10v,t2v,t){
 
 // ── API ───────────────────────────────────
 async function emFetch(syms){
-  try{const r=await fetch(`/api/sina?symbols=${encodeURIComponent(syms)}`);return await r.json()}catch{return{}}
+  try{
+    const url=`https://push2.eastmoney.com/api/qt/ulist.np/get?fltt=2&invt=2&fields=f12,f14,f2,f3,f4&secids=${syms}&ut=bd1d9ddb04089700cf9c27f6f7426281&cb=?`;
+    const r=await fetch(url,{headers:{'Referer':'https://quote.eastmoney.com/'}});
+    const text=await r.text();
+    // strip JSONP wrapper ?({...})
+    const json=text.replace(/^\?\(/,'').replace(/\)$/,'');
+    const data=JSON.parse(json);
+    const result={};
+    const items=data?.data?.diff||[];
+    for(const item of items){
+      result[item.f12]={name:item.f14,price:item.f2,pct:item.f3,chg:item.f4};
+    }
+    return result;
+  }catch{return{}}
 }
 async function fredFetch(series,limit=5,start=''){
-  try{let u=`/api/fred?series=${series}&limit=${limit}`;if(start)u+=`&start=${start}`;const r=await fetch(u);return await r.json()}catch{return null}
+  try{
+    const KEY='9226f0d1af2b3eeb79310adeeb4a92ba';
+    let u=`https://api.stlouisfed.org/fred/series/observations?series_id=${series}&api_key=${KEY}&sort_order=desc&file_type=json&limit=${limit}`;
+    if(start)u+=`&observation_start=${start}`;
+    const r=await fetch(u);return await r.json();
+  }catch{return null}
 }
 async function cryptoFetch(){
   try{const r=await fetch('https://api.coingecko.com/api/v3/simple/price?ids=bitcoin,ethereum&vs_currencies=usd&include_24hr_change=true');return await r.json()}catch{return{}}
