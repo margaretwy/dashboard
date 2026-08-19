@@ -10,19 +10,10 @@ export default async function handler(req, res) {
         'User-Agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36',
       }
     });
+    const status = r.status;
     const text = await r.text();
-    const result = {};
-    const lines = text.trim().split('\n');
-    for (const line of lines) {
-      const m = line.match(/var hq_str_(.+?)="(.*)"/);
-      if (!m) continue;
-      const sym = m[1];
-      const parts = m[2].split(',');
-      // s_sh format: name,price,change,pct,volume,amount
-      // gb_ format: name,...,price(3),...
-      const price = parseFloat(parts[1]);
-      const chg = parseFloat(parts[2]);
-      const pct = parseFloat(parts[3]);
-      result[sym] = { price, chg, pct, parts };
-    }
-  res.status(200).json({ result, raw: text.slice(0, 500) });
+    res.status(200).json({ status, raw: text.slice(0, 500) });
+  } catch (e) {
+    res.status(500).json({ error: e.message });
+  }
+}
