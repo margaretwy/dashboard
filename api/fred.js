@@ -2,7 +2,7 @@ export default async function handler(req, res) {
   res.setHeader('Access-Control-Allow-Origin', '*');
   const { series, start, limit } = req.query;
   if (!series) return res.status(400).json({ error: 'missing series' });
-  const KEY = 'e6b8a6a9f3c2d1e4f5a7b8c9d0e1f2a3';
+  const KEY = '9226f0d1af2b3eeb79310adeeb4a92ba';
   try {
     let url = `https://api.stlouisfed.org/fred/series/observations?series_id=${series}&api_key=${KEY}&sort_order=desc&file_type=json`;
     if (limit) url += `&limit=${limit}`;
