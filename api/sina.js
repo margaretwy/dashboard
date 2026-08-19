@@ -12,12 +12,11 @@ export default async function handler(req, res) {
     });
     const buf = await r.arrayBuffer();
     const bytes = new Uint8Array(buf);
-    // Convert GBK to string - extract only ASCII-safe numbers and separators
     let text = '';
     for (let i = 0; i < bytes.length; i++) {
       const b = bytes[i];
       if (b < 128) text += String.fromCharCode(b);
-      else { text += '?'; if (b > 127) i++; } // skip GBK double-byte chars
+      else { text += '?'; if (b > 127) i++; }
     }
     const result = {};
     const lines = text.trim().split('\n');
@@ -29,4 +28,11 @@ export default async function handler(req, res) {
       result[sym] = {
         price: parseFloat(parts[1]),
         chg: parseFloat(parts[2]),
-        pct:
+        pct: parseFloat(parts[3]),
+      };
+    }
+    res.status(200).json(result);
+  } catch (e) {
+    res.status(500).json({ error: e.message });
+  }
+}
