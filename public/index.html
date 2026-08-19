@@ -7,15 +7,7 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
 <style>
 *{box-sizing:border-box;margin:0;padding:0}
-:root{
-  --bg:#F7F8FA;--surface:#FFF;--border:#E8EAF0;
-  --text1:#1A1D23;--text2:#6B7280;--text3:#9CA3AF;
-  --up:#16A34A;--down:#DC2626;--neutral:#6B7280;
-  --accent:#2563EB;--accent-l:#EFF6FF;--warn:#D97706;
-  --sidebar:256px;--header:52px;--radius:10px;
-  --mono:'SF Mono','Fira Code',monospace;
-  --shadow:0 1px 3px rgba(0,0,0,.06);
-}
+:root{--bg:#F7F8FA;--surface:#FFF;--border:#E8EAF0;--text1:#1A1D23;--text2:#6B7280;--text3:#9CA3AF;--up:#16A34A;--down:#DC2626;--neutral:#6B7280;--accent:#2563EB;--accent-l:#EFF6FF;--warn:#D97706;--header:52px;--radius:10px;--mono:'SF Mono','Fira Code',monospace;--shadow:0 1px 3px rgba(0,0,0,.06)}
 body{font-family:-apple-system,BlinkMacSystemFont,'PingFang SC','Helvetica Neue',sans-serif;background:var(--bg);color:var(--text1)}
 #pw-screen{position:fixed;inset:0;background:#F7F8FA;display:flex;align-items:center;justify-content:center;z-index:1000}
 .pw-box{background:#fff;border-radius:14px;padding:40px;width:340px;box-shadow:0 8px 32px rgba(0,0,0,.1);text-align:center}
@@ -35,10 +27,17 @@ header h1{font-size:14px;font-weight:600}
 #lu{font-size:11px;color:var(--text3);font-family:var(--mono)}
 .btn{padding:5px 12px;border-radius:6px;font-size:12px;font-weight:500;cursor:pointer;border:none}
 .btn-p{background:var(--accent);color:#fff}.btn-g{background:var(--accent-l);color:var(--accent)}
-.app-body{display:flex;flex:1;overflow:hidden}
-aside{width:var(--sidebar);background:var(--surface);border-right:1px solid var(--border);display:flex;flex-direction:column;flex-shrink:0}
+.app-body{display:flex;flex:1;overflow:hidden;position:relative}
+
+/* SIDEBAR */
+aside{width:256px;min-width:160px;max-width:480px;background:var(--surface);border-right:1px solid var(--border);display:flex;flex-direction:column;flex-shrink:0;position:relative}
+
+/* DRAG HANDLE */
+.drag-handle{position:absolute;top:0;right:-3px;width:6px;height:100%;cursor:col-resize;z-index:10;background:transparent;transition:background .15s}
+.drag-handle:hover,.drag-handle.dragging{background:var(--accent)}
+
 .stabs{display:flex;border-bottom:1px solid var(--border)}
-.stab{flex:1;padding:10px 0;text-align:center;font-size:11px;font-weight:600;color:var(--text3);cursor:pointer;border-bottom:2px solid transparent}
+.stab{flex:1;padding:10px 0;text-align:center;font-size:11px;font-weight:600;color:var(--text3);cursor:pointer;border-bottom:2px solid transparent;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;padding-inline:4px}
 .stab.on{color:var(--accent);border-bottom-color:var(--accent)}
 .spanel{display:none;flex-direction:column;flex:1;overflow:hidden}
 .spanel.on{display:flex}
@@ -61,6 +60,7 @@ aside{width:var(--sidebar);background:var(--surface);border-right:1px solid var(
 .sacts{display:flex;gap:5px;margin-top:7px}
 .sbtn{font-size:10px;padding:2px 7px;border-radius:4px;cursor:pointer;border:1px solid var(--border);background:var(--surface)}
 .sfoot{padding:10px;border-top:1px solid var(--border)}
+
 main{flex:1;overflow-y:auto;padding:18px 22px 40px}
 .sec-hdr{display:flex;align-items:center;gap:8px;margin:22px 0 10px}
 .sec-hdr:first-child{margin-top:0}
@@ -77,8 +77,7 @@ main{flex:1;overflow-y:auto;padding:18px 22px 40px}
 .cc.up{color:var(--up)}.cc.down{color:var(--down)}.cc.neu{color:var(--neutral)}
 .cts{font-size:9px;color:var(--text3);margin-top:3px;font-family:var(--mono)}
 .vbadge{font-size:9px;font-weight:700;letter-spacing:.05em;text-transform:uppercase;padding:2px 5px;border-radius:3px;display:inline-block;margin-top:3px}
-.vl{background:#DCFCE7;color:#15803D}.vm{background:#FEF9C3;color:#A16207}
-.vh{background:#FEE2E2;color:#B91C1C}.vx{background:#B91C1C;color:#fff}
+.vl{background:#DCFCE7;color:#15803D}.vm{background:#FEF9C3;color:#A16207}.vh{background:#FEE2E2;color:#B91C1C}.vx{background:#B91C1C;color:#fff}
 .sbar{position:absolute;top:0;right:0;width:4px;height:100%;border-radius:0 var(--radius) var(--radius) 0}
 .sp{background:var(--up)}.sn{background:var(--down)}
 .lpulse{background:linear-gradient(90deg,#F3F4F6 25%,#E5E7EB 50%,#F3F4F6 75%);background-size:200% 100%;animation:pulse 1.5s infinite;border-radius:4px;height:16px;width:65px;display:inline-block}
@@ -112,6 +111,11 @@ main{flex:1;overflow-y:auto;padding:18px 22px 40px}
 .tbtn{font-size:9px;padding:2px 6px;border-radius:4px;cursor:pointer;border:1px solid var(--border);background:var(--surface);color:var(--text2)}
 .tbtn.on{background:var(--accent);color:#fff;border-color:var(--accent)}
 .cwrap{position:relative;height:150px}
+.gold-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-bottom:8px}
+.gold-card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:11px 13px;box-shadow:var(--shadow)}
+.gold-label{font-size:10px;color:var(--text3);margin-bottom:4px}
+.gold-val{font-size:15px;font-weight:700;font-family:var(--mono)}
+.gold-sub{font-size:9px;color:var(--text3);margin-top:3px}
 .ov{display:none;position:fixed;inset:0;background:rgba(0,0,0,.5);z-index:200;align-items:center;justify-content:center}
 .ov.on{display:flex}
 .modal{background:#fff;border-radius:14px;padding:22px;width:820px;max-width:96vw;box-shadow:0 20px 60px rgba(0,0,0,.15)}
@@ -152,7 +156,9 @@ main{flex:1;overflow-y:auto;padding:18px 22px 40px}
   <div class="hdr-r"><span id="lu">加载中...</span><button class="btn btn-g" onclick="snap()">📸 存档</button><button class="btn btn-p" onclick="init()">↻ 刷新</button></div>
 </header>
 <div class="app-body">
-<aside>
+
+<aside id="sidebar">
+  <div class="drag-handle" id="drag-handle"></div>
   <div class="stabs"><div class="stab on" onclick="stab('j')">📝 日志</div><div class="stab" onclick="stab('s')">📦 存档</div></div>
   <div class="spanel on" id="p-j">
     <div class="jlist" id="jlist"></div>
@@ -166,66 +172,70 @@ main{flex:1;overflow-y:auto;padding:18px 22px 40px}
     <div class="sfoot"><button class="btn btn-p" style="width:100%" onclick="snap()">📸 立即存档</button></div>
   </div>
 </aside>
+
 <main>
   <div class="sec-hdr"><span class="sec-label">第一部分 · 实时大类资产价格</span><div class="sec-line"></div></div>
 
   <div class="sub">🇺🇸 美国市场</div>
-  <div class="g5" id="g-us">
-    <div class="card" onclick="oc('SPY','标普500 SPY')"><div class="cl">标普500 S&P 500</div><div class="cv" id="v-SPY"><span class="lpulse"></span></div><div class="cc neu" id="c-SPY">—</div><div class="cts" id="t-SPY"></div></div>
-    <div class="card" onclick="oc('QQQ','纳斯达克100 QQQ')"><div class="cl">纳斯达克100 NDX</div><div class="cv" id="v-QQQ"><span class="lpulse"></span></div><div class="cc neu" id="c-QQQ">—</div><div class="cts" id="t-QQQ"></div></div>
-    <div class="card" onclick="oc('DIA','道琼斯 DIA')"><div class="cl">道琼斯 Dow Jones</div><div class="cv" id="v-DIA"><span class="lpulse"></span></div><div class="cc neu" id="c-DIA">—</div><div class="cts" id="t-DIA"></div></div>
-    <div class="card" onclick="oc('IWM','罗素2000 IWM')"><div class="cl">罗素2000 Russell</div><div class="cv" id="v-IWM"><span class="lpulse"></span></div><div class="cc neu" id="c-IWM">—</div><div class="cts" id="t-IWM"></div></div>
-    <div class="card" onclick="oc('%5EVIX','VIX恐慌指数')"><div class="cl">VIX 恐慌指数</div><div class="cv" id="v-VIX"><span class="lpulse"></span></div><div id="vbadge"></div><div class="cts" id="t-VIX"></div></div>
+  <div class="g5">
+    <div class="card" onclick="oc('100.SPX','标普500')"><div class="cl">标普500 S&P 500</div><div class="cv" id="v-SPX"><span class="lpulse"></span></div><div class="cc neu" id="c-SPX">—</div><div class="cts" id="t-SPX"></div></div>
+    <div class="card" onclick="oc('100.NDX','纳斯达克100')"><div class="cl">纳斯达克100 NDX</div><div class="cv" id="v-NDX"><span class="lpulse"></span></div><div class="cc neu" id="c-NDX">—</div><div class="cts" id="t-NDX"></div></div>
+    <div class="card" onclick="oc('100.DJI','道琼斯')"><div class="cl">道琼斯 Dow Jones</div><div class="cv" id="v-DJI"><span class="lpulse"></span></div><div class="cc neu" id="c-DJI">—</div><div class="cts" id="t-DJI"></div></div>
+    <div class="card" onclick="oc('100.RUT','罗素2000')"><div class="cl">罗素2000 Russell</div><div class="cv" id="v-RUT"><span class="lpulse"></span></div><div class="cc neu" id="c-RUT">—</div><div class="cts" id="t-RUT"></div></div>
+    <div class="card"><div class="cl">VIX 恐慌指数</div><div class="cv" id="v-VIX"><span class="lpulse"></span></div><div id="vbadge"></div><div class="cts" id="t-VIX"></div></div>
     <div class="card" onclick="oc('US10Y','十年美债')"><div class="cl">十年美债 US 10Y</div><div class="cv" id="v-US10Y"><span class="lpulse"></span></div><div class="cc neu" id="c-US10Y">—</div><div class="cts" id="t-US10Y"></div></div>
     <div class="card" onclick="oc('US2Y','两年美债')"><div class="cl">两年美债 US 2Y</div><div class="cv" id="v-US2Y"><span class="lpulse"></span></div><div class="cc neu" id="c-US2Y">—</div><div class="cts" id="t-US2Y"></div></div>
-    <div class="card" onclick="oc('SPREAD','剪刀差10Y-2Y')" style="position:relative"><div class="cl">剪刀差 10Y−2Y</div><div class="cv" id="v-SPREAD">—</div><div class="cc neu" id="c-SPREAD">—</div><div class="cts" id="t-SPREAD"></div><div class="sbar" id="sbar"></div></div>
-    <div class="card" onclick="oc('DX-Y.NYB','美元指数 DXY')"><div class="cl">美元指数 DXY</div><div class="cv" id="v-DXY"><span class="lpulse"></span></div><div class="cc neu" id="c-DXY">—</div><div class="cts" id="t-DXY"></div></div>
+    <div class="card" onclick="oc('SPREAD','剪刀差')" style="position:relative"><div class="cl">剪刀差 10Y−2Y</div><div class="cv" id="v-SPREAD">—</div><div class="cc neu" id="c-SPREAD">—</div><div class="cts" id="t-SPREAD"></div><div class="sbar" id="sbar"></div></div>
+    <div class="card" onclick="oc('133.DXY','美元指数')"><div class="cl">美元指数 DXY</div><div class="cv" id="v-DXY"><span class="lpulse"></span></div><div class="cc neu" id="c-DXY">—</div><div class="cts" id="t-DXY"></div></div>
   </div>
 
   <div class="sub">🇨🇳 中国市场</div>
   <div class="g5">
-    <div class="card" onclick="oc('000300.SS','沪深300')"><div class="cl">沪深300</div><div class="cv" id="v-CSI300"><span class="lpulse"></span></div><div class="cc neu" id="c-CSI300">—</div><div class="cts" id="t-CSI300"></div></div>
-    <div class="card" onclick="oc('000905.SS','中证500')"><div class="cl">中证500</div><div class="cv" id="v-CSI500"><span class="lpulse"></span></div><div class="cc neu" id="c-CSI500">—</div><div class="cts" id="t-CSI500"></div></div>
-    <div class="card" onclick="oc('000852.SS','中证1000')"><div class="cl">中证1000</div><div class="cv" id="v-CSI1000"><span class="lpulse"></span></div><div class="cc neu" id="c-CSI1000">—</div><div class="cts" id="t-CSI1000"></div></div>
-    <div class="card" onclick="oc('000510.SS','中证A500')"><div class="cl">中证A500</div><div class="cv" id="v-CSIA500"><span class="lpulse"></span></div><div class="cc neu" id="c-CSIA500">—</div><div class="cts" id="t-CSIA500"></div></div>
-    <div class="card" onclick="oc('000016.SS','上证50')"><div class="cl">上证50</div><div class="cv" id="v-SSE50"><span class="lpulse"></span></div><div class="cc neu" id="c-SSE50">—</div><div class="cts" id="t-SSE50"></div></div>
-    <div class="card" onclick="oc('%5EHSI','恒生指数')"><div class="cl">恒生指数 HSI</div><div class="cv" id="v-HSI"><span class="lpulse"></span></div><div class="cc neu" id="c-HSI">—</div><div class="cts" id="t-HSI"></div></div>
-    <div class="card" onclick="oc('%5EHSTECH','恒生科技')"><div class="cl">恒生科技 HSTECH</div><div class="cv" id="v-HSTECH"><span class="lpulse"></span></div><div class="cc neu" id="c-HSTECH">—</div><div class="cts" id="t-HSTECH"></div></div>
-    <div class="card" onclick="oc('USDCNY=X','人民币兑美元')"><div class="cl">人民币兑美元 CNY</div><div class="cv" id="v-USDCNY"><span class="lpulse"></span></div><div class="cc neu" id="c-USDCNY">—</div><div class="cts" id="t-USDCNY"></div></div>
+    <div class="card" onclick="oc('1.000300','沪深300')"><div class="cl">沪深300</div><div class="cv" id="v-000300"><span class="lpulse"></span></div><div class="cc neu" id="c-000300">—</div><div class="cts" id="t-000300"></div></div>
+    <div class="card" onclick="oc('1.000905','中证500')"><div class="cl">中证500</div><div class="cv" id="v-000905"><span class="lpulse"></span></div><div class="cc neu" id="c-000905">—</div><div class="cts" id="t-000905"></div></div>
+    <div class="card" onclick="oc('1.000852','中证1000')"><div class="cl">中证1000</div><div class="cv" id="v-000852"><span class="lpulse"></span></div><div class="cc neu" id="c-000852">—</div><div class="cts" id="t-000852"></div></div>
+    <div class="card" onclick="oc('1.000510','中证A500')"><div class="cl">中证A500</div><div class="cv" id="v-000510"><span class="lpulse"></span></div><div class="cc neu" id="c-000510">—</div><div class="cts" id="t-000510"></div></div>
+    <div class="card" onclick="oc('1.000016','上证50')"><div class="cl">上证50</div><div class="cv" id="v-000016"><span class="lpulse"></span></div><div class="cc neu" id="c-000016">—</div><div class="cts" id="t-000016"></div></div>
+    <div class="card" onclick="oc('116.HSI','恒生指数')"><div class="cl">恒生指数 HSI</div><div class="cv" id="v-HSI"><span class="lpulse"></span></div><div class="cc neu" id="c-HSI">—</div><div class="cts" id="t-HSI"></div></div>
+    <div class="card" onclick="oc('116.HSTECH','恒生科技')"><div class="cl">恒生科技 HSTECH</div><div class="cv" id="v-HSTECH"><span class="lpulse"></span></div><div class="cc neu" id="c-HSTECH">—</div><div class="cts" id="t-HSTECH"></div></div>
+    <div class="card" onclick="oc('120.USDCNY','人民币兑美元')"><div class="cl">人民币兑美元 CNY</div><div class="cv" id="v-USDCNY"><span class="lpulse"></span></div><div class="cc neu" id="c-USDCNY">—</div><div class="cts" id="t-USDCNY"></div></div>
     <div class="card"><div class="cl">十年中国国债 CN10Y</div><div class="cv" id="v-CN10Y">—</div><div class="cc neu">手动更新</div><div class="cts" id="t-CN10Y"></div></div>
   </div>
 
   <div class="sub">🌏 亚洲市场</div>
   <div class="g5">
-    <div class="card" onclick="oc('%5EN225','日经225')"><div class="cl">日经225 Nikkei</div><div class="cv" id="v-N225"><span class="lpulse"></span></div><div class="cc neu" id="c-N225">—</div><div class="cts" id="t-N225"></div></div>
-    <div class="card" onclick="oc('%5EKS11','韩国综合')"><div class="cl">韩国综合 KOSPI</div><div class="cv" id="v-KOSPI"><span class="lpulse"></span></div><div class="cc neu" id="c-KOSPI">—</div><div class="cts" id="t-KOSPI"></div></div>
-    <div class="card" onclick="oc('%5ESTI','新加坡STI')"><div class="cl">新加坡 STI</div><div class="cv" id="v-STI"><span class="lpulse"></span></div><div class="cc neu" id="c-STI">—</div><div class="cts" id="t-STI"></div></div>
-    <div class="card" onclick="oc('%5ENSEI','印度NIFTY50')"><div class="cl">印度 NIFTY 50</div><div class="cv" id="v-NIFTY"><span class="lpulse"></span></div><div class="cc neu" id="c-NIFTY">—</div><div class="cts" id="t-NIFTY"></div></div>
-    <div class="card" onclick="oc('%5ETWII','台湾加权')"><div class="cl">台湾加权 TWSE</div><div class="cv" id="v-TWSE"><span class="lpulse"></span></div><div class="cc neu" id="c-TWSE">—</div><div class="cts" id="t-TWSE"></div></div>
+    <div class="card" onclick="oc('100.N225','日经225')"><div class="cl">日经225 Nikkei</div><div class="cv" id="v-N225"><span class="lpulse"></span></div><div class="cc neu" id="c-N225">—</div><div class="cts" id="t-N225"></div></div>
+    <div class="card" onclick="oc('100.KS11','韩国综合')"><div class="cl">韩国综合 KOSPI</div><div class="cv" id="v-KS11"><span class="lpulse"></span></div><div class="cc neu" id="c-KS11">—</div><div class="cts" id="t-KS11"></div></div>
+    <div class="card" onclick="oc('100.STI','新加坡STI')"><div class="cl">新加坡 STI</div><div class="cv" id="v-STI"><span class="lpulse"></span></div><div class="cc neu" id="c-STI">—</div><div class="cts" id="t-STI"></div></div>
+    <div class="card" onclick="oc('100.NSEI','印度NIFTY')"><div class="cl">印度 NIFTY 50</div><div class="cv" id="v-NSEI"><span class="lpulse"></span></div><div class="cc neu" id="c-NSEI">—</div><div class="cts" id="t-NSEI"></div></div>
+    <div class="card" onclick="oc('100.TWII','台湾加权')"><div class="cl">台湾加权 TWSE</div><div class="cv" id="v-TWII"><span class="lpulse"></span></div><div class="cc neu" id="c-TWII">—</div><div class="cts" id="t-TWII"></div></div>
   </div>
 
   <div class="sub">🇪🇺 欧洲市场</div>
   <div class="g4">
-    <div class="card" onclick="oc('%5EFTSE','富时100')"><div class="cl">富时100 FTSE 100</div><div class="cv" id="v-FTSE"><span class="lpulse"></span></div><div class="cc neu" id="c-FTSE">—</div><div class="cts" id="t-FTSE"></div></div>
-    <div class="card" onclick="oc('%5EGDAXI','德国DAX')"><div class="cl">德国 DAX</div><div class="cv" id="v-DAX"><span class="lpulse"></span></div><div class="cc neu" id="c-DAX">—</div><div class="cts" id="t-DAX"></div></div>
-    <div class="card" onclick="oc('%5EFCHI','法国CAC40')"><div class="cl">法国 CAC 40</div><div class="cv" id="v-CAC"><span class="lpulse"></span></div><div class="cc neu" id="c-CAC">—</div><div class="cts" id="t-CAC"></div></div>
-    <div class="card" onclick="oc('%5ESTOXX50E','欧元斯托克50')"><div class="cl">欧元斯托克 50</div><div class="cv" id="v-STOXX"><span class="lpulse"></span></div><div class="cc neu" id="c-STOXX">—</div><div class="cts" id="t-STOXX"></div></div>
+    <div class="card" onclick="oc('100.FTSE','富时100')"><div class="cl">富时100 FTSE 100</div><div class="cv" id="v-FTSE"><span class="lpulse"></span></div><div class="cc neu" id="c-FTSE">—</div><div class="cts" id="t-FTSE"></div></div>
+    <div class="card" onclick="oc('100.GDAXI','德国DAX')"><div class="cl">德国 DAX</div><div class="cv" id="v-GDAXI"><span class="lpulse"></span></div><div class="cc neu" id="c-GDAXI">—</div><div class="cts" id="t-GDAXI"></div></div>
+    <div class="card" onclick="oc('100.FCHI','法国CAC40')"><div class="cl">法国 CAC 40</div><div class="cv" id="v-FCHI"><span class="lpulse"></span></div><div class="cc neu" id="c-FCHI">—</div><div class="cts" id="t-FCHI"></div></div>
+    <div class="card" onclick="oc('100.STOXX50E','欧元斯托克50')"><div class="cl">欧元斯托克 50</div><div class="cv" id="v-STOXX50E"><span class="lpulse"></span></div><div class="cc neu" id="c-STOXX50E">—</div><div class="cts" id="t-STOXX50E"></div></div>
   </div>
 
   <div class="sub">🪨 大宗商品</div>
   <div class="g5">
-    <div class="card" onclick="oc('GC=F','黄金')"><div class="cl">黄金 Gold $/oz</div><div class="cv" id="v-GOLD"><span class="lpulse"></span></div><div class="cc neu" id="c-GOLD">—</div><div class="cts" id="t-GOLD"></div></div>
-    <div class="card" onclick="oc('SI=F','白银')"><div class="cl">白银 Silver $/oz</div><div class="cv" id="v-SILVER"><span class="lpulse"></span></div><div class="cc neu" id="c-SILVER">—</div><div class="cts" id="t-SILVER"></div></div>
-    <div class="card" onclick="oc('CL=F','WTI原油')"><div class="cl">WTI 原油 $/bbl</div><div class="cv" id="v-WTI"><span class="lpulse"></span></div><div class="cc neu" id="c-WTI">—</div><div class="cts" id="t-WTI"></div></div>
-    <div class="card" onclick="oc('BZ=F','布伦特原油')"><div class="cl">布伦特 Brent $/bbl</div><div class="cv" id="v-BRENT"><span class="lpulse"></span></div><div class="cc neu" id="c-BRENT">—</div><div class="cts" id="t-BRENT"></div></div>
-    <div class="card" onclick="oc('HG=F','铜')"><div class="cl">铜 Copper $/lb</div><div class="cv" id="v-COPPER"><span class="lpulse"></span></div><div class="cc neu" id="c-COPPER">—</div><div class="cts" id="t-COPPER"></div></div>
+    <div class="card" onclick="oc('133.GC00Y','黄金')"><div class="cl">黄金 Gold $/oz</div><div class="cv" id="v-GOLD"><span class="lpulse"></span></div><div class="cc neu" id="c-GOLD">—</div><div class="cts" id="t-GOLD"></div></div>
+    <div class="card" onclick="oc('133.SI00Y','白银')"><div class="cl">白银 Silver $/oz</div><div class="cv" id="v-SILVER"><span class="lpulse"></span></div><div class="cc neu" id="c-SILVER">—</div><div class="cts" id="t-SILVER"></div></div>
+    <div class="card" onclick="oc('133.CL00Y','WTI原油')"><div class="cl">WTI 原油 $/bbl</div><div class="cv" id="v-WTI"><span class="lpulse"></span></div><div class="cc neu" id="c-WTI">—</div><div class="cts" id="t-WTI"></div></div>
+    <div class="card" onclick="oc('133.ICE_BRN00Y','布伦特')"><div class="cl">布伦特 Brent $/bbl</div><div class="cv" id="v-BRENT"><span class="lpulse"></span></div><div class="cc neu" id="c-BRENT">—</div><div class="cts" id="t-BRENT"></div></div>
+    <div class="card" onclick="oc('133.HG00Y','铜')"><div class="cl">铜 Copper $/lb</div><div class="cv" id="v-COPPER"><span class="lpulse"></span></div><div class="cc neu" id="c-COPPER">—</div><div class="cts" id="t-COPPER"></div></div>
   </div>
 
   <div class="sub">₿ 加密货币</div>
   <div class="g5" style="grid-template-columns:repeat(2,1fr);max-width:340px">
-    <div class="card" onclick="oc('BTC-USD','比特币')"><div class="cl">比特币 Bitcoin</div><div class="cv" id="v-BTC"><span class="lpulse"></span></div><div class="cc neu" id="c-BTC">—</div><div class="cts" id="t-BTC"></div></div>
-    <div class="card" onclick="oc('ETH-USD','以太坊')"><div class="cl">以太坊 Ethereum</div><div class="cv" id="v-ETH"><span class="lpulse"></span></div><div class="cc neu" id="c-ETH">—</div><div class="cts" id="t-ETH"></div></div>
+    <div class="card" onclick="oc('BTC','比特币')"><div class="cl">比特币 Bitcoin</div><div class="cv" id="v-BTC"><span class="lpulse"></span></div><div class="cc neu" id="c-BTC">—</div><div class="cts" id="t-BTC"></div></div>
+    <div class="card" onclick="oc('ETH','以太坊')"><div class="cl">以太坊 Ethereum</div><div class="cv" id="v-ETH"><span class="lpulse"></span></div><div class="cc neu" id="c-ETH">—</div><div class="cts" id="t-ETH"></div></div>
   </div>
+
+  <div class="sec-hdr" style="margin-top:26px"><span class="sec-label">黄金供需月度观察</span><div class="sec-line"></div><button class="ebtn" onclick="openGoldEdit()">编辑</button></div>
+  <div class="gold-grid" id="gold-demand-grid"></div>
 
   <div class="sec-hdr"><span class="sec-label">估值与股权风险溢价 ERP</span><div class="sec-line"></div><button class="ebtn" onclick="openVE()">编辑估值</button></div>
   <div class="vtable"><div class="vhdr"><span>指数</span><span>PE (TTM)</span><span>PB</span><span>股息率</span><span>ERP</span><span>更新时间</span></div><div id="vrows"></div></div>
@@ -233,19 +243,9 @@ main{flex:1;overflow-y:auto;padding:18px 22px 40px}
   <div class="sec-hdr" style="margin-top:26px"><span class="sec-label">走势图</span><div class="sec-line"></div></div>
   <div class="cgrid">
     <div class="ccard">
-      <div class="ctop"><div><div class="ctitle">标普500 SPY vs VIX</div><div class="csub">双轴对比</div></div>
-      <div class="tbtns"><button class="tbtn" onclick="sr('sv','1mo',this)">1M</button><button class="tbtn" onclick="sr('sv','3mo',this)">3M</button><button class="tbtn on" onclick="sr('sv','1y',this)">1Y</button><button class="tbtn" onclick="sr('sv','3y',this)">3Y</button><button class="tbtn" onclick="sr('sv','5y',this)">5Y</button></div></div>
-      <div class="cwrap"><canvas id="ch-sv"></canvas></div>
-    </div>
-    <div class="ccard">
       <div class="ctop"><div><div class="ctitle">美债剪刀差 10Y−2Y</div><div class="csub">负值=倒挂（衰退预警）</div></div>
       <div class="tbtns"><button class="tbtn" onclick="sr('sp','1mo',this)">1M</button><button class="tbtn" onclick="sr('sp','3mo',this)">3M</button><button class="tbtn on" onclick="sr('sp','1y',this)">1Y</button><button class="tbtn" onclick="sr('sp','3y',this)">3Y</button><button class="tbtn" onclick="sr('sp','5y',this)">5Y</button></div></div>
       <div class="cwrap"><canvas id="ch-sp"></canvas></div>
-    </div>
-    <div class="ccard">
-      <div class="ctop"><div><div class="ctitle">黄金 Gold $/oz</div><div class="csub">走势</div></div>
-      <div class="tbtns"><button class="tbtn" onclick="sr('go','1mo',this)">1M</button><button class="tbtn" onclick="sr('go','3mo',this)">3M</button><button class="tbtn on" onclick="sr('go','1y',this)">1Y</button><button class="tbtn" onclick="sr('go','3y',this)">3Y</button><button class="tbtn" onclick="sr('go','5y',this)">5Y</button></div></div>
-      <div class="cwrap"><canvas id="ch-go"></canvas></div>
     </div>
     <div class="ccard">
       <div class="ctop"><div><div class="ctitle">美元指数 DXY</div><div class="csub">走势</div></div>
@@ -263,27 +263,20 @@ main{flex:1;overflow-y:auto;padding:18px 22px 40px}
 </div>
 </div>
 
-<!-- DETAIL MODAL -->
 <div class="ov" id="dov">
   <div class="modal">
     <div class="mhdr"><div class="mtit" id="dtit">走势图</div><button class="mclose" onclick="cd()">✕</button></div>
     <div class="mtbtns">
-      <button class="tbtn on" onclick="dr('1mo',this)">1个月</button>
-      <button class="tbtn" onclick="dr('3mo',this)">3个月</button>
-      <button class="tbtn" onclick="dr('6mo',this)">6个月</button>
-      <button class="tbtn" onclick="dr('1y',this)">1年</button>
-      <button class="tbtn" onclick="dr('3y',this)">3年</button>
-      <button class="tbtn" onclick="dr('5y',this)">5年</button>
+      <button class="tbtn on" onclick="dr('1mo',this)">1个月</button><button class="tbtn" onclick="dr('3mo',this)">3个月</button>
+      <button class="tbtn" onclick="dr('6mo',this)">6个月</button><button class="tbtn" onclick="dr('1y',this)">1年</button>
+      <button class="tbtn" onclick="dr('3y',this)">3年</button><button class="tbtn" onclick="dr('5y',this)">5年</button>
     </div>
     <div class="mcwrap"><canvas id="dch"></canvas></div>
   </div>
 </div>
 
-<!-- EDIT MODAL -->
 <div class="ov" id="eov">
-  <div class="emodal">
-    <h3 id="etit">编辑</h3>
-    <div id="efields"></div>
+  <div class="emodal"><h3 id="etit">编辑</h3><div id="efields"></div>
     <div class="macts"><button class="bcancel" onclick="ce()">取消</button><button class="bsave" onclick="se()">保存</button></div>
   </div>
 </div>
@@ -311,7 +304,82 @@ if(ls('auth','')=== PW){
   document.getElementById('app').style.display='flex';
 }
 
-// VALUATION
+// ── DRAG TO RESIZE SIDEBAR ────────────────
+(function(){
+  const sidebar=document.getElementById('sidebar');
+  const handle=document.getElementById('drag-handle');
+  let dragging=false,startX=0,startW=0;
+  const savedW=ls('sidebar-w',256);
+  sidebar.style.width=savedW+'px';
+  handle.addEventListener('mousedown',e=>{
+    dragging=true;startX=e.clientX;startW=sidebar.offsetWidth;
+    handle.classList.add('dragging');
+    document.body.style.cursor='col-resize';
+    document.body.style.userSelect='none';
+    e.preventDefault();
+  });
+  document.addEventListener('mousemove',e=>{
+    if(!dragging)return;
+    const w=Math.min(480,Math.max(160,startW+(e.clientX-startX)));
+    sidebar.style.width=w+'px';
+  });
+  document.addEventListener('mouseup',()=>{
+    if(!dragging)return;
+    dragging=false;
+    handle.classList.remove('dragging');
+    document.body.style.cursor='';
+    document.body.style.userSelect='';
+    lss('sidebar-w',sidebar.offsetWidth);
+  });
+  // Touch support
+  handle.addEventListener('touchstart',e=>{
+    dragging=true;startX=e.touches[0].clientX;startW=sidebar.offsetWidth;
+    handle.classList.add('dragging');e.preventDefault();
+  },{passive:false});
+  document.addEventListener('touchmove',e=>{
+    if(!dragging)return;
+    const w=Math.min(480,Math.max(160,startW+(e.touches[0].clientX-startX)));
+    sidebar.style.width=w+'px';
+  });
+  document.addEventListener('touchend',()=>{
+    if(!dragging)return;
+    dragging=false;handle.classList.remove('dragging');
+    lss('sidebar-w',sidebar.offsetWidth);
+  });
+})();
+
+// ── GOLD DEMAND ───────────────────────────
+const defaultGold=[
+  {k:'etf',l:'ETF持仓变化（吨）',v:'',d:'',src:'世界黄金协会'},
+  {k:'cb',l:'央行购金（吨）',v:'',d:'',src:'IMF'},
+  {k:'comex',l:'COMEX净多头（万手）',v:'',d:'',src:'CFTC COT'},
+  {k:'sge',l:'上海金交所成交（吨）',v:'',d:'',src:'SGE'},
+  {k:'jewelry',l:'珠宝需求（吨）',v:'',d:'',src:'世界黄金协会季报'},
+  {k:'inv',l:'投资需求（吨）',v:'',d:'',src:'世界黄金协会季报'},
+  {k:'mine',l:'矿山供应（吨）',v:'',d:'',src:'世界黄金协会季报'},
+  {k:'recycle',l:'回收供应（吨）',v:'',d:'',src:'世界黄金协会季报'},
+];
+let goldData=ls('gold-data',defaultGold);
+function renderGold(){
+  document.getElementById('gold-demand-grid').innerHTML=goldData.map(r=>`
+    <div class="gold-card">
+      <div class="gold-label">${r.l}</div>
+      <div class="gold-val">${r.v||'—'}</div>
+      <div class="gold-sub">${r.d||'未更新'} · ${r.src}</div>
+    </div>`).join('');
+}
+function openGoldEdit(){
+  document.getElementById('etit').textContent='编辑黄金供需数据';
+  document.getElementById('efields').innerHTML=goldData.map(r=>`
+    <div class="field"><label>${r.l}（来源：${r.src}）</label>
+    <div style="display:flex;gap:5px">
+      <input id="gf-${r.k}-v" value="${r.v}" placeholder="数值" style="flex:2"/>
+      <input id="gf-${r.k}-d" value="${r.d}" placeholder="如2026-07" style="flex:1;font-size:10px"/>
+    </div></div>`).join('');
+  ectx='gold';document.getElementById('eov').classList.add('on');
+}
+
+// ── VALUATION ─────────────────────────────
 const dv=[
   {id:'SPX',name:'S&P 500',pe:'',pb:'',dy:'',erp:'4.23',ts:''},
   {id:'NDX',name:'纳指100',pe:'',pb:'',dy:'',erp:'',ts:''},
@@ -330,7 +398,7 @@ function rvt(){
   }).join('');
 }
 
-// MACRO
+// ── MACRO ─────────────────────────────────
 const dm={
   us:[{k:'gdp',l:'GDP增长率',v:'2.4%',d:'2026 Q1',dir:'up'},{k:'cpi',l:'CPI通胀率',v:'3.1%',d:'2026-07',dir:'down'},{k:'ccpi',l:'核心CPI',v:'3.0%',d:'2026-07',dir:'neutral'},{k:'nfp',l:'非农就业（万）',v:'+17.7',d:'2026-07',dir:'up'},{k:'ic',l:'初请失业金（万）',v:'23.0',d:'2026-08',dir:'neutral'},{k:'cc',l:'续请失业金（万）',v:'185.0',d:'2026-08',dir:'neutral'},{k:'pm',l:'PMI制造业',v:'49.6',d:'2026-07',dir:'down'},{k:'ps',l:'PMI服务业',v:'53.5',d:'2026-07',dir:'up'},{k:'fed',l:'联邦基金利率',v:'4.25–4.50%',d:'2026-07',dir:'neutral'},{k:'ret',l:'零售销售 MoM',v:'+0.6%',d:'2026-07',dir:'up'}],
   cn:[{k:'gdp',l:'GDP增长率',v:'4.6%',d:'2026 Q2',dir:'neutral'},{k:'cpi',l:'CPI通胀率',v:'0.2%',d:'2026-07',dir:'neutral'},{k:'ppi',l:'PPI生产者价格',v:'-1.5%',d:'2026-07',dir:'down'},{k:'pm',l:'PMI制造业（官方）',v:'49.4',d:'2026-07',dir:'down'},{k:'ps',l:'PMI服务业（财新）',v:'51.2',d:'2026-07',dir:'up'},{k:'m2',l:'M2货币供应 YoY',v:'7.3%',d:'2026-07',dir:'neutral'},{k:'tsf',l:'社融规模（亿元）',v:'13,200',d:'2026-07',dir:'neutral'},{k:'ln',l:'新增贷款（亿元）',v:'8,100',d:'2026-07',dir:'neutral'},{k:'exp',l:'出口增速 YoY',v:'+5.4%',d:'2026-07',dir:'up'},{k:'fx',l:'外汇储备（万亿$）',v:'3.28',d:'2026-07',dir:'neutral'}]
@@ -343,7 +411,7 @@ function rm(r){
     <div class="mmeta">${x.d}</div></div></div>`).join('');
 }
 
-// CARD HELPERS
+// ── CARD HELPERS ──────────────────────────
 const fmt=(n,d=2)=>{
   if(n==null||isNaN(n))return'—';
   if(Math.abs(n)>=10000)return n.toLocaleString('en-US',{maximumFractionDigits:0});
@@ -371,88 +439,92 @@ function ssp(t10v,t2v,t){
   if(ts&&t)ts.textContent=`更新 ${t}`;
 }
 
-// API - all via Yahoo proxy
-async function yq(sym,range='5d'){
-  try{
-    const r=await fetch(`/api/yahoo?symbol=${encodeURIComponent(sym)}&range=${range}&interval=1d`);
-    return await r.json();
-  }catch{return null}
+// ── API ───────────────────────────────────
+async function emFetch(syms){
+  try{const r=await fetch(`/api/sina?symbols=${encodeURIComponent(syms)}`);return await r.json()}catch{return{}}
 }
-async function fred(series,limit=5,start=''){
-  try{
-    let u=`/api/fred?series=${series}&limit=${limit}`;
-    if(start)u+=`&start=${start}`;
-    const r=await fetch(u);return await r.json();
-  }catch{return null}
+async function fredFetch(series,limit=5,start=''){
+  try{let u=`/api/fred?series=${series}&limit=${limit}`;if(start)u+=`&start=${start}`;const r=await fetch(u);return await r.json()}catch{return null}
+}
+async function cryptoFetch(){
+  try{const r=await fetch('https://api.coingecko.com/api/v3/simple/price?ids=bitcoin,ethereum&vs_currencies=usd&include_24hr_change=true');return await r.json()}catch{return{}}
 }
 
-function parseQuote(j){
-  const q=j?.chart?.result?.[0];if(!q)return null;
-  const p=q.meta.regularMarketPrice;
-  const prev=q.meta.previousClose||q.meta.chartPreviousClose||p;
-  return{price:p,prev,chg:p-prev,pct:prev?(p-prev)/prev*100:0};
-}
-
-// Symbol map: card-id -> yahoo symbol
-const SYM={
-  SPY:'SPY',QQQ:'QQQ',DIA:'DIA',IWM:'IWM',
-  VIX:'%5EVIX',
-  DXY:'DX-Y.NYB',
-  CSI300:'000300.SS',CSI500:'000905.SS',CSI1000:'000852.SS',CSIA500:'000510.SS',SSE50:'000016.SS',
-  HSI:'%5EHSI',HSTECH:'%5EHSTECH',USDCNY:'USDCNY=X',
-  N225:'%5EN225',KOSPI:'%5EKS11',STI:'%5ESTI',NIFTY:'%5ENSEI',TWSE:'%5ETWII',
-  FTSE:'%5EFTSE',DAX:'%5EGDAXI',CAC:'%5EFCHI',STOXX:'%5ESTOXX50E',
-  GOLD:'GC=F',SILVER:'SI=F',WTI:'CL=F',BRENT:'BZ=F',COPPER:'HG=F',
-  BTC:'BTC-USD',ETH:'ETH-USD',
+// EM symbol -> card id map
+const EM_MAP={
+  'SPX':'SPX','NDX':'NDX','DJI':'DJI','RUT':'RUT','VIX':'VIX','DXY':'DXY',
+  '000300':'000300','000905':'000905','000852':'000852','000510':'000510','000016':'000016',
+  'HSI':'HSI','HSTECH':'HSTECH','USDCNY':'USDCNY',
+  'N225':'N225','KS11':'KS11','STI':'STI','NSEI':'NSEI','TWII':'TWII',
+  'FTSE':'FTSE','GDAXI':'GDAXI','FCHI':'FCHI','STOXX50E':'STOXX50E',
+  'GC00Y':'GOLD','SI00Y':'SILVER','CL00Y':'WTI','ICE_BRN00Y':'BRENT','HG00Y':'COPPER',
 };
+
+const EM_BATCHES=[
+  '100.SPX,100.NDX,100.DJI,100.RUT,100.VIX',
+  '133.DXY,120.USDCNY',
+  '1.000300,1.000905,1.000852,1.000510,1.000016',
+  '116.HSI,116.HSTECH',
+  '100.N225,100.KS11,100.STI,100.NSEI,100.TWII',
+  '100.FTSE,100.GDAXI,100.FCHI,100.STOXX50E',
+  '133.GC00Y,133.SI00Y,133.CL00Y,133.ICE_BRN00Y,133.HG00Y',
+];
 
 let t10=null,t2=null;
 
 async function init(){
   const now=ts();
   document.getElementById('lu').textContent='正在刷新...';
-
-  // FRED for US treasuries (most reliable)
-  const [f10,f2]=await Promise.all([fred('DGS10',5),fred('DGS2',5)]);
+  const [f10,f2]=await Promise.all([fredFetch('DGS10',5),fredFetch('DGS2',5)]);
   const gl=j=>{const o=j?.observations?.filter(o=>o.value!='.')||[];return o.length?parseFloat(o[0].value):null};
   t10=gl(f10);t2=gl(f2);
   if(t10)sc('US10Y',t10,null,null,now);
   if(t2)sc('US2Y',t2,null,null,now);
   ssp(t10,t2,now);
-
-  // All other prices via Yahoo
-  await Promise.all(Object.entries(SYM).map(async([id,sym])=>{
-    const j=await yq(sym,'5d');
-    const q=parseQuote(j);if(!q)return;
-    if(id==='VIX')svix(q.price,now);
-    else sc(id,q.price,q.chg,q.pct,now);
-  }));
-
+  for(const batch of EM_BATCHES){
+    const data=await emFetch(batch);
+    for(const [code,item] of Object.entries(data)){
+      const id=EM_MAP[code];if(!id||!item)continue;
+      if(id==='VIX')svix(item.price,now);
+      else sc(id,item.price,item.chg,item.pct,now);
+    }
+  }
+  const cr=await cryptoFetch();
+  ['bitcoin','ethereum'].forEach(coin=>{
+    const id=coin==='bitcoin'?'BTC':'ETH';
+    if(!cr[coin])return;
+    const p=cr[coin].usd,c=cr[coin].usd_24h_change;
+    const v=document.getElementById('v-'+id),cc=document.getElementById('c-'+id),t=document.getElementById('t-'+id);
+    if(v){v.innerHTML='';v.textContent='$'+Math.round(p).toLocaleString()}
+    if(cc){cc.className=`cc ${c>0?'up':c<0?'down':'neu'}`;cc.textContent=`${c>0?'+':''}${c.toFixed(2)}%`}
+    if(t)t.textContent=`更新 ${now}`;
+  });
   document.getElementById('lu').textContent=`上次刷新 ${now}`;
   rvt();loadCharts();
 }
 
-// CHARTS
-const charts={};
-const ranges={sv:'1y',sp:'1y',go:'1y',dx:'1y'};
-const ri2iv=r=>['1mo','3mo'].includes(r)?'1d':'1wk';
-
-async function getYHist(sym,range){
-  const j=await yq(sym,range);
-  const q=j?.chart?.result?.[0];if(!q)return null;
-  const closes=q.indicators?.quote?.[0]?.close||[];
-  const labs=q.timestamp?.map(t=>new Date(t*1000).toLocaleDateString('zh-CN',{month:'2-digit',day:'2-digit'}))||[];
-  return{labels:labs,closes};
-}
-async function getFREDsp(range){
+// ── CHARTS ────────────────────────────────
+const charts={};const ranges={sp:'1y',dx:'1y'};
+async function getFREDhist(range){
   const days={'1mo':30,'3mo':90,'6mo':180,'1y':365,'3y':1095,'5y':1825}[range]||365;
   const start=new Date(Date.now()-days*86400000).toISOString().slice(0,10);
-  const [j10,j2]=await Promise.all([fred('DGS10',500,start),fred('DGS2',500,start)]);
+  const [j10,j2]=await Promise.all([fredFetch('DGS10',500,start),fredFetch('DGS2',500,start)]);
   const o10=j10?.observations?.filter(o=>o.value!='.')||[];
   const o2=j2?.observations?.filter(o=>o.value!='.')||[];
   const m2={};o2.forEach(o=>m2[o.date]=parseFloat(o.value));
   const merged=o10.filter(o=>m2[o.date]!=null).map(o=>({date:o.date,val:+(parseFloat(o.value)-m2[o.date]).toFixed(3)}));
   return{labels:merged.map(m=>m.date.slice(5)),closes:merged.map(m=>m.val)};
+}
+async function getEMkline(secid,range){
+  const days={'1mo':30,'3mo':90,'6mo':180,'1y':365,'3y':1095,'5y':1825}[range]||365;
+  const beg=new Date(Date.now()-days*86400000).toISOString().slice(0,10).replace(/-/g,'');
+  try{
+    const url=`https://push2his.eastmoney.com/api/qt/stock/kline/get?fields1=f1,f2,f3,f4,f5&fields2=f51,f52,f53,f54,f55,f56&klt=101&fqt=0&secid=${encodeURIComponent(secid)}&beg=${beg}&end=20500101&lmt=2000`;
+    const r=await fetch(url,{headers:{'Referer':'https://quote.eastmoney.com/'}});
+    const j=await r.json();
+    if(!j?.data?.klines)return null;
+    return{labels:j.data.klines.map(k=>k.split(',')[0].slice(5)),closes:j.data.klines.map(k=>parseFloat(k.split(',')[2]))};
+  }catch{return null}
 }
 function mkChart(id,labels,datasets,dual=false){
   if(charts[id])charts[id].destroy();
@@ -469,13 +541,9 @@ function ds(label,data,color,yId='y',dash=false){
   return{label,data,borderColor:color,backgroundColor:color.replace(')',',0.07)').replace('rgb','rgba'),borderWidth:1.5,pointRadius:0,tension:.3,fill:!dash,yAxisID:yId,...(dash?{borderDash:[4,3]}:{})};
 }
 async function loadCharts(){
-  const [sx,vx]=await Promise.all([getYHist('SPY',ranges.sv),getYHist('%5EVIX',ranges.sv)]);
-  if(sx)mkChart('ch-sv',sx.labels,[ds('SPY',sx.closes,'rgb(37,99,235)','y'),ds('VIX',vx?.closes||[],'rgb(220,38,38)','y1',true)],true);
-  const sp=await getFREDsp(ranges.sp);
+  const sp=await getFREDhist(ranges.sp);
   if(sp){const last=sp.closes[sp.closes.length-1];mkChart('ch-sp',sp.labels,[ds('10Y-2Y%',sp.closes,last>=0?'rgb(22,163,74)':'rgb(220,38,38)')])}
-  const go=await getYHist('GC=F',ranges.go);
-  if(go)mkChart('ch-go',go.labels,[ds('Gold',go.closes,'rgb(217,119,6)')]);
-  const dx=await getYHist('DX-Y.NYB',ranges.dx);
+  const dx=await getEMkline('133.DXY',ranges.dx);
   if(dx)mkChart('ch-dx',dx.labels,[ds('DXY',dx.closes,'rgb(124,58,237)')]);
 }
 async function sr(id,range,btn){
@@ -484,22 +552,20 @@ async function sr(id,range,btn){
   btn.classList.add('on');await loadCharts();
 }
 
-// DETAIL CHART
-let dsym='',dch=null,dcurSym='';
+// ── DETAIL CHART ──────────────────────────
+let dcurSym='',dch=null;
 async function oc(sym,label){
-  dcurSym=sym;
-  document.getElementById('dtit').textContent=label+' · 走势图';
+  dcurSym=sym;document.getElementById('dtit').textContent=label+' · 走势图';
   document.getElementById('dov').classList.add('on');
   document.querySelectorAll('.mtbtns .tbtn').forEach((b,i)=>b.classList.toggle('on',i===0));
   await ld('1mo');
 }
 function cd(){document.getElementById('dov').classList.remove('on');if(dch){dch.destroy();dch=null}}
-async function dr(r,btn){
-  document.querySelectorAll('.mtbtns .tbtn').forEach(b=>b.classList.remove('on'));
-  btn.classList.add('on');await ld(r);
-}
+async function dr(r,btn){document.querySelectorAll('.mtbtns .tbtn').forEach(b=>b.classList.remove('on'));btn.classList.add('on');await ld(r)}
 async function ld(range){
-  const data=dcurSym==='US10Y'?await getFREDsp(range):await getYHist(dcurSym,range);
+  let data=null;
+  if(dcurSym==='US10Y'||dcurSym==='SPREAD')data=await getFREDhist(range);
+  else data=await getEMkline(dcurSym,range);
   if(!data)return;
   if(dch)dch.destroy();
   const last=data.closes.filter(Boolean).slice(-1)[0];
@@ -511,7 +577,7 @@ async function ld(range){
   });
 }
 
-// EDIT MODALS
+// ── EDIT MODALS ───────────────────────────
 let ectx=null;
 function openVE(){
   ectx='val';document.getElementById('etit').textContent='编辑估值与ERP';
@@ -519,7 +585,7 @@ function openVE(){
     <div style="border:1px solid var(--border);border-radius:6px;padding:9px;margin-bottom:7px">
       <div style="font-size:10px;font-weight:600;margin-bottom:5px">${r.name}</div>
       <div style="display:grid;grid-template-columns:1fr 1fr 1fr 1fr;gap:5px">
-        <div class="field"><label>PE (TTM)</label><input id="vf-${r.id}-pe" value="${r.pe}"/></div>
+        <div class="field"><label>PE</label><input id="vf-${r.id}-pe" value="${r.pe}"/></div>
         <div class="field"><label>PB</label><input id="vf-${r.id}-pb" value="${r.pb}"/></div>
         <div class="field"><label>股息率%</label><input id="vf-${r.id}-dy" value="${r.dy}"/></div>
         <div class="field"><label>ERP%</label><input id="vf-${r.id}-erp" value="${r.erp}"/></div>
@@ -544,11 +610,16 @@ function openME(r){
 }
 function ce(){document.getElementById('eov').classList.remove('on');ectx=null}
 function se(){
-  if(!ectx)return;
-  const now=ts();
+  if(!ectx)return;const now=ts();
   if(ectx==='val'){
     vd.forEach(r=>{['pe','pb','dy','erp'].forEach(f=>{const el=document.getElementById(`vf-${r.id}-${f}`);if(el)r[f]=el.value});r.ts=now});
     lss('vd',vd);rvt();
+  } else if(ectx==='gold'){
+    goldData.forEach(r=>{
+      const v=document.getElementById(`gf-${r.k}-v`);const d=document.getElementById(`gf-${r.k}-d`);
+      if(v)r.v=v.value;if(d)r.d=d.value;
+    });
+    lss('gold-data',goldData);renderGold();
   } else {
     const reg=ectx.split('-')[1];
     md[reg].forEach(x=>{
@@ -560,7 +631,7 @@ function se(){
   ce();
 }
 
-// SIDEBAR
+// ── SIDEBAR ───────────────────────────────
 function stab(t){
   document.querySelectorAll('.stab').forEach(x=>x.classList.remove('on'));
   document.querySelectorAll('.spanel').forEach(x=>x.classList.remove('on'));
@@ -568,7 +639,7 @@ function stab(t){
   document.getElementById('p-'+t).classList.add('on');
 }
 
-// JOURNAL
+// ── JOURNAL ───────────────────────────────
 let journals=ls('journals',[]);
 function rj(){
   const el=document.getElementById('jlist');
@@ -587,16 +658,16 @@ function saveJ(){
 }
 function vj(i){const j=journals[i];alert(`[${j.ts}]\n\n${j.text}${j.tags.length?'\n\n标签: '+j.tags.join(', '):''}${j.snap?'\n\n──快照──\n'+j.snap:''}`)}
 
-// SNAPSHOTS
+// ── SNAPSHOTS ─────────────────────────────
 let snaps=ls('snaps',[]);
 function gsnap(){
-  return['SPY','QQQ','VIX','US10Y','GOLD','WTI','BTC'].map(id=>{
+  return['SPX','NDX','VIX','US10Y','GOLD','WTI','BTC','000300'].map(id=>{
     const v=document.getElementById('v-'+id);return v&&v.textContent&&v.textContent!=='—'?`${id}:${v.textContent}`:'';
   }).filter(Boolean).join(' | ');
 }
 function snap(){
   const full={};
-  ['SPY','QQQ','DIA','IWM','VIX','US10Y','US2Y','GOLD','SILVER','WTI','BTC','ETH','DXY','USDCNY','CSI300','CSI500'].forEach(id=>{
+  ['SPX','NDX','DJI','RUT','VIX','US10Y','US2Y','GOLD','SILVER','WTI','BTC','ETH','DXY','USDCNY','000300','000905'].forEach(id=>{
     const v=document.getElementById('v-'+id);const c=document.getElementById('c-'+id);
     if(v)full[id]={val:v.textContent,chg:c?c.textContent:''};
   });
@@ -621,7 +692,7 @@ function epdf(i){
 document.getElementById('dov').addEventListener('click',e=>{if(e.target===document.getElementById('dov'))cd()});
 document.getElementById('eov').addEventListener('click',e=>{if(e.target===document.getElementById('eov'))ce()});
 
-function startApp(){rvt();rm('us');rm('cn');rj();rs();init();setInterval(init,5*60*1000)}
+function startApp(){rvt();rm('us');rm('cn');rj();rs();renderGold();init();setInterval(init,5*60*1000)}
 if(ls('auth','')=== PW)startApp();
 </script>
 </body>
