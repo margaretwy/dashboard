@@ -97,6 +97,9 @@ main{flex:1;overflow-y:auto;padding:18px 22px 40px}
 .vcell{font-size:11px;font-family:var(--mono);color:var(--text2)}
 .verp{font-weight:700}.eh{color:var(--up)}.em{color:var(--warn)}.el{color:var(--down)}
 .evts{font-size:9px;color:var(--text3)}
+.vpctl{font-size:8px;color:var(--text3);margin-top:1px;cursor:help}
+.vpctl.warn{color:var(--warn)}
+.vcaption{font-size:9px;color:var(--text3);padding:6px 13px 0}
 .ebtn{font-size:10px;color:var(--accent);background:none;border:none;cursor:pointer;padding:0;font-weight:500}
 .mgrid{display:grid;grid-template-columns:1fr 1fr;gap:12px}
 .mcard{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:14px;box-shadow:var(--shadow)}
@@ -243,7 +246,7 @@ main{flex:1;overflow-y:auto;padding:18px 22px 40px}
   <div class="gold-grid" id="gold-demand-grid"></div>
 
   <div class="sec-hdr"><span class="sec-label">估值与股权风险溢价 ERP</span><div class="sec-line"></div><button class="ebtn" onclick="openVE()">编辑估值</button></div>
-  <div class="vtable"><div class="vhdr"><span>指数</span><span>PE (TTM)</span><span>Fwd EPS</span><span>PB</span><span>股息率</span><span>ERP</span><span>更新时间</span></div><div id="vrows"></div></div>
+  <div class="vtable"><div class="vhdr"><span>指数</span><span>PE (TTM)</span><span>Fwd EPS</span><span>PB</span><span>股息率</span><span>ERP</span><span>更新时间</span></div><div id="vrows"></div><div class="vcaption">PE/PB下方小字为历史分位（数值越高＝估值处于历史高位）；多数用近10年，中证A500因成立不满10年用"成立以来"；带⚠的表示数据源口径与本表当前值不完全一致，仅供参考，鼠标悬停看说明</div></div>
 
   <div class="sec-hdr" style="margin-top:26px"><span class="sec-label">走势图</span><div class="sec-line"></div></div>
   <div class="cgrid">
@@ -394,15 +397,33 @@ function openGoldEdit(){
 // ── VALUATION ─────────────────────────────
 // 下面这批初始值是查证到的数据（截至2026-08-19左右，来源见对话里的说明），
 // 纳指100的预测EPS、恒生指数的PB没查到可靠数字，留空，别瞎填。
+// pePctl/pbPctl = PE/PB历史分位（0-100），pePctlWin/pbPctlWin = 用的窗口（10Y或"成立以来"），
+// pePctlNote/pbPctlNote = 数据源与口径说明，开头带⚠的表示口径跟本表当前值对不上，仅供参考。
 const dv=[
-  {id:'SPX',name:'S&P 500',pe:'29.65',fwdEps:'385',pb:'6.11',dy:'1.04',erp:'4.23',ts:'2026-08-19'},
-  {id:'NDX',name:'纳指100',pe:'28.59',fwdEps:'',pb:'6.3',dy:'0.45',erp:'',ts:'2026-08-19'},
-  {id:'CSI300',name:'沪深300',pe:'13.77',fwdEps:'',pb:'1.45',dy:'2.72',erp:'',ts:'2026-08-19'},
-  {id:'CSI500',name:'中证500',pe:'29.06',fwdEps:'',pb:'2.43',dy:'1.54',erp:'',ts:'2026-08-19'},
-  {id:'CSI1000',name:'中证1000',pe:'31.19',fwdEps:'',pb:'2.39',dy:'1.34',erp:'',ts:'2026-08-19'},
-  {id:'CSIA500',name:'中证A500',pe:'16.09',fwdEps:'',pb:'1.69',dy:'2.54',erp:'',ts:'2026-08-19'},
-  {id:'SSE50',name:'上证50',pe:'11.5',fwdEps:'',pb:'1.23',dy:'3.28',erp:'',ts:'2026-08-19'},
-  {id:'HSI',name:'恒生指数',pe:'18.87',fwdEps:'',pb:'',dy:'2.89',erp:'',ts:'2026-08-19'},
+  {id:'SPX',name:'S&P 500',pe:'29.65',fwdEps:'385',pb:'6.11',dy:'1.04',erp:'4.51',ts:'2026-08-19',
+    pePctl:'91',pePctlWin:'10Y',pePctlNote:'基于multpl.com月度数据自行计算(2016-08~2026-08共128个月度点)，与本表PE口径一致(29.65吻合)，可信度较高；用的是月度而非日度数据，属近似值',
+    pbPctl:'',pbPctlWin:'',pbPctlNote:'multpl只有年度P/B快照(11个点)，样本太少不足以算分位，暂缺'},
+  {id:'NDX',name:'纳指100',pe:'28.59',fwdEps:'',pb:'6.3',dy:'0.45',erp:'',ts:'2026-08-19',
+    pePctl:'',pePctlWin:'',pePctlNote:'没找到可靠的10年分位数据源（GuruFocus完整历史下载不了，Siblis Research只有9个季度点太稀疏），没瞎算，暂缺',
+    pbPctl:'',pbPctlWin:'',pbPctlNote:''},
+  {id:'CSI300',name:'沪深300',pe:'13.77',fwdEps:'',pb:'1.45',dy:'2.72',erp:'',ts:'2026-08-19',
+    pePctl:'81.1',pePctlWin:'10Y',pePctlNote:'源:baifenwei.com，口径与本表PE基本一致(14.21 vs 13.77)，可信度较高',
+    pbPctl:'47.4',pbPctlWin:'10Y',pbPctlNote:'源:baifenwei.com，口径基本一致(1.46 vs 1.45)'},
+  {id:'CSI500',name:'中证500',pe:'29.06',fwdEps:'',pb:'2.43',dy:'1.54',erp:'',ts:'2026-08-19',
+    pePctl:'91.0',pePctlWin:'10Y',pePctlNote:'⚠源:baifenwei.com的PE口径(37.62)比本表PE(29.06)高约29%，可能是等权/全口径算法而非加权PE，分位数仅供参考',
+    pbPctl:'85.7',pbPctlWin:'10Y',pbPctlNote:'源:baifenwei.com，PB口径接近(2.58 vs 2.43)，相对可信'},
+  {id:'CSI1000',name:'中证1000',pe:'31.19',fwdEps:'',pb:'2.39',dy:'1.34',erp:'',ts:'2026-08-19',
+    pePctl:'71.2',pePctlWin:'10Y',pePctlNote:'⚠源:baifenwei.com的PE口径(44.05)比本表PE(31.19)高约41%，分位数仅供参考',
+    pbPctl:'48.4',pbPctlWin:'10Y',pbPctlNote:'源:baifenwei.com，PB口径接近(2.42 vs 2.39)，相对可信'},
+  {id:'CSIA500',name:'中证A500',pe:'16.09',fwdEps:'',pb:'1.69',dy:'2.54',erp:'',ts:'2026-08-19',
+    pePctl:'65.15',pePctlWin:'成立以来',pePctlNote:'⚠源:etf.run，用的是等权PE(32.24)，比本表加权PE(16.09)高约1倍，分位数可信度低，仅供参考；A500 2024年10月才成立，用"成立以来"代替10年窗口',
+    pbPctl:'56.49',pbPctlWin:'成立以来',pbPctlNote:'⚠同样是等权PB(2.72)口径，与本表PB(1.69)差异较大，仅供参考'},
+  {id:'SSE50',name:'上证50',pe:'11.5',fwdEps:'',pb:'1.23',dy:'3.28',erp:'',ts:'2026-08-19',
+    pePctl:'76.6',pePctlWin:'10Y',pePctlNote:'源:baifenwei.com，口径与本表PE基本一致(11.47 vs 11.5)，可信度较高',
+    pbPctl:'54.9',pbPctlWin:'10Y',pbPctlNote:'源:baifenwei.com，口径基本一致(1.25 vs 1.23)'},
+  {id:'HSI',name:'恒生指数',pe:'18.87',fwdEps:'',pb:'',dy:'2.89',erp:'',ts:'2026-08-19',
+    pePctl:'70.3',pePctlWin:'10Y',pePctlNote:'⚠市场上PE口径打架严重：官方18.87／乐咕乐股(市场平均法)14.33／baifenwei自身口径11.76，此分位基于最低的口径算出，可信度较低',
+    pbPctl:'76.5',pbPctlWin:'10Y',pbPctlNote:'⚠源:baifenwei.com给出PB约1.26，未经交叉验证，谨慎参考'},
 ];
 let vd=ls('vd',dv);
 // 兼容旧数据：之前存的是空值默认表，现在有查到的数字了，把空字段补上；
@@ -411,9 +432,13 @@ let vd=ls('vd',dv);
   const byId={};dv.forEach(d=>{byId[d.id]=d});
   vd.forEach(r=>{
     const def=byId[r.id];if(!def)return;
-    ['pe','fwdEps','pb','dy','erp'].forEach(f=>{if(!r[f]&&def[f])r[f]=def[f]});
+    ['pe','fwdEps','pb','dy','erp','pePctl','pePctlWin','pePctlNote','pbPctl','pbPctlWin','pbPctlNote'].forEach(f=>{if(!r[f]&&def[f])r[f]=def[f]});
     if(!r.ts&&def.ts)r.ts=def.ts;
   });
+  // 一次性更正：之前填的 S&P500 ERP=4.23% 是 Damodaran 2026年初的旧数字，
+  // 核实到3月中旬已经涨到4.51%了，如果还是那个没手动改过的旧默认值，顺手更新掉。
+  const spx=vd.find(r=>r.id==='SPX');
+  if(spx&&spx.erp==='4.23')spx.erp='4.51';
   lss('vd',vd);
 }
 
@@ -432,10 +457,16 @@ function openCN10YEdit(){
     <div class="field"><label>数据日期</label><input id="cf-d" value="${cn10y.d}" placeholder="如 2026-08-19"/></div>`;
   document.getElementById('eov').classList.add('on');
 }
+function pctlBadge(val,win,note){
+  if(!val)return'';
+  const warn=note&&note.indexOf('⚠')===0;
+  const esc=s=>(s||'').replace(/&/g,'&amp;').replace(/"/g,'&quot;');
+  return`<div class="vpctl${warn?' warn':''}" title="${esc(win?win+'分位 · '+note:note)}">${win||''} ${val}%</div>`;
+}
 function rvt(){
   document.getElementById('vrows').innerHTML=vd.map(r=>{
     const e=parseFloat(r.erp),ec=!r.erp?'':e>=4?'eh':e>=2?'em':'el';
-    return`<div class="vrow"><div><div class="vname">${r.name}</div></div><div class="vcell">${r.pe||'—'}</div><div class="vcell">${r.fwdEps||'—'}</div><div class="vcell">${r.pb||'—'}</div><div class="vcell">${r.dy||'—'}</div><div class="vcell verp ${ec}">${r.erp?r.erp+'%':'—'}</div><div class="vcell"><div class="evts">${r.ts||'未更新'}</div></div></div>`;
+    return`<div class="vrow"><div><div class="vname">${r.name}</div></div><div class="vcell">${r.pe||'—'}${pctlBadge(r.pePctl,r.pePctlWin,r.pePctlNote)}</div><div class="vcell">${r.fwdEps||'—'}</div><div class="vcell">${r.pb||'—'}${pctlBadge(r.pbPctl,r.pbPctlWin,r.pbPctlNote)}</div><div class="vcell">${r.dy||'—'}</div><div class="vcell verp ${ec}">${r.erp?r.erp+'%':'—'}</div><div class="vcell"><div class="evts">${r.ts||'未更新'}</div></div></div>`;
   }).join('');
 }
 
@@ -738,6 +769,12 @@ function openVE(){
         <div class="field"><label>股息率%</label><input id="vf-${r.id}-dy" value="${r.dy}"/></div>
         <div class="field"><label>ERP%</label><input id="vf-${r.id}-erp" value="${r.erp}"/></div>
       </div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:5px;margin-top:5px">
+        <div class="field"><label>PE分位% (${r.pePctlWin||'窗口未知'})</label><input id="vf-${r.id}-pePctl" value="${r.pePctl||''}"/></div>
+        <div class="field"><label>PB分位% (${r.pbPctlWin||'窗口未知'})</label><input id="vf-${r.id}-pbPctl" value="${r.pbPctl||''}"/></div>
+      </div>
+      ${r.pePctlNote?`<div style="font-size:9px;color:var(--text3);margin-top:4px">PE分位说明：${r.pePctlNote}</div>`:''}
+      ${r.pbPctlNote?`<div style="font-size:9px;color:var(--text3);margin-top:2px">PB分位说明：${r.pbPctlNote}</div>`:''}
     </div>`).join('');
   document.getElementById('eov').classList.add('on');
 }
@@ -761,7 +798,7 @@ function ce(){document.getElementById('eov').classList.remove('on');ectx=null}
 function se(){
   if(!ectx)return;const now=ts();
   if(ectx==='val'){
-    vd.forEach(r=>{['pe','fwdEps','pb','dy','erp'].forEach(f=>{const el=document.getElementById(`vf-${r.id}-${f}`);if(el)r[f]=el.value});r.ts=now});
+    vd.forEach(r=>{['pe','fwdEps','pb','dy','erp','pePctl','pbPctl'].forEach(f=>{const el=document.getElementById(`vf-${r.id}-${f}`);if(el)r[f]=el.value});r.ts=now});
     lss('vd',vd);rvt();
   } else if(ectx==='gold'){
     goldData.forEach(r=>{
