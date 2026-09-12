@@ -124,12 +124,27 @@ main{flex:1;overflow-y:auto;padding:18px 22px 40px}
 .gold-label{font-size:10px;color:var(--text3);margin-bottom:4px}
 .gold-val{font-size:15px;font-weight:700;font-family:var(--mono)}
 .gold-sub{font-size:9px;color:var(--text3);margin-top:3px}
+.gold-card.clk{cursor:pointer}
+.sector-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(225px,1fr));gap:8px;margin-bottom:8px}
+.sector-card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:11px 13px;box-shadow:var(--shadow);cursor:default}
+.sector-card.cyc{border-left:3px solid var(--warn)}
+.sector-top{display:flex;justify-content:space-between;align-items:flex-start;gap:6px;margin-bottom:4px}
+.sector-name{font-size:10px;color:var(--text3);line-height:1.3}
+.sector-cyc-tag{font-size:8px;color:var(--warn);border:1px solid var(--warn);border-radius:4px;padding:1px 4px;white-space:nowrap;flex-shrink:0}
+.sector-val{font-size:14px;font-weight:700;font-family:var(--mono)}
+.sector-val .spctl{font-size:9px;font-weight:400;color:var(--text3);margin-left:4px}
+.sector-val .spctl.warn{color:var(--warn)}
+.sector-range{font-size:9px;color:var(--text3);margin-top:2px}
+.sector-etf{font-size:9px;color:var(--text2);margin-top:5px;padding-top:5px;border-top:1px dashed var(--border)}
+.sector-date{font-size:9px;color:var(--text3);margin-top:3px}
 .ov{display:none;position:fixed;inset:0;background:rgba(0,0,0,.5);z-index:200;align-items:center;justify-content:center}
 .ov.on{display:flex}
 .modal{background:#fff;border-radius:14px;padding:22px;width:820px;max-width:96vw;box-shadow:0 20px 60px rgba(0,0,0,.15)}
 .mhdr{display:flex;justify-content:space-between;align-items:center;margin-bottom:14px}
 .mtit{font-size:15px;font-weight:700}
 .mclose{background:none;border:none;font-size:18px;cursor:pointer;color:var(--text3)}
+.dchg{font-size:13px;font-weight:700;font-family:var(--mono)}
+.dchg.up{color:var(--up)}.dchg.down{color:var(--down)}
 .mcwrap{position:relative;height:280px}
 .mtbtns{display:flex;gap:5px;margin-bottom:12px}
 .emodal{background:#fff;border-radius:12px;padding:20px;width:520px;max-width:96vw;box-shadow:0 20px 60px rgba(0,0,0,.15);max-height:90vh;overflow-y:auto}
@@ -248,6 +263,13 @@ main{flex:1;overflow-y:auto;padding:18px 22px 40px}
   <div class="sec-hdr"><span class="sec-label">估值与股权风险溢价 ERP</span><div class="sec-line"></div><button class="ebtn" onclick="openVE()">编辑估值</button></div>
   <div class="vtable"><div class="vhdr"><span>指数</span><span>PE (TTM)</span><span>PE (静态)</span><span>Fwd EPS</span><span>PB</span><span>股息率</span><span>ERP</span><span>更新时间</span></div><div id="vrows"></div><div class="vcaption">PE/PB下方小字为历史分位（数值越高＝估值处于历史高位）；多数用近10年，中证A500因成立不满10年用"成立以来"；带⚠的表示数据源口径与本表当前值不完全一致，仅供参考，鼠标悬停看说明。PE(静态)＝用上一年年报净利润算的市盈率，A股常用这个口径看历史分位，美股/港股没有对应的标准公开指标，暂缺（鼠标悬停"—"看原因）</div></div>
 
+  <div class="sec-hdr" style="margin-top:26px"><span class="sec-label">行业/主题指数估值</span><div class="sec-line"></div><button class="ebtn" onclick="openSectorEdit()">编辑</button></div>
+  <div class="sub">🇨🇳 中国</div>
+  <div class="sector-grid" id="sector-cn-grid"></div>
+  <div class="sub">🇺🇸 美国</div>
+  <div class="sector-grid" id="sector-us-grid"></div>
+  <div class="vcaption">左边框加粗橙线的是周期性行业(卡片上PB会更显眼一点)。部分数据来自跟踪该指数的ETF(不是指数本身)，部分是前瞻PE不是TTM，中美口径不统一，历史分位有的能找到有的找不到(美股11个板块目前都没查到真正的百分位数据源，只能给"跟10年区间比"这种粗略定位，别当成精确分位)——鼠标悬停每张卡片看具体说明</div>
+
   <div class="sec-hdr" style="margin-top:26px"><span class="sec-label">走势图</span><div class="sec-line"></div></div>
   <div class="cgrid">
     <div class="ccard">
@@ -273,10 +295,11 @@ main{flex:1;overflow-y:auto;padding:18px 22px 40px}
 
 <div class="ov" id="dov">
   <div class="modal">
-    <div class="mhdr"><div class="mtit" id="dtit">走势图</div><button class="mclose" onclick="cd()">✕</button></div>
+    <div class="mhdr"><div style="display:flex;align-items:baseline;gap:9px"><div class="mtit" id="dtit">走势图</div><span class="dchg" id="dchg"></span></div><button class="mclose" onclick="cd()">✕</button></div>
     <div class="mtbtns">
       <button class="tbtn on" onclick="dr('1mo',this)">1个月</button><button class="tbtn" onclick="dr('3mo',this)">3个月</button>
-      <button class="tbtn" onclick="dr('6mo',this)">6个月</button><button class="tbtn" onclick="dr('1y',this)">1年</button>
+      <button class="tbtn" onclick="dr('6mo',this)">6个月</button><button class="tbtn" onclick="dr('ytd',this)">YTD</button>
+      <button class="tbtn" onclick="dr('1y',this)">1年</button>
       <button class="tbtn" onclick="dr('3y',this)">3年</button><button class="tbtn" onclick="dr('5y',this)">5年</button>
     </div>
     <div class="mcwrap"><canvas id="dch"></canvas></div>
@@ -375,9 +398,29 @@ let goldData=ls('gold-data',defaultGold);
   goldData=keep.map(k=>byKey[k]||defaultGold.find(d=>d.k===k));
   lss('gold-data',goldData);
 }
+// 一次性刷新到最新数据（2026-09-11查证），逻辑跟宏观那次一样：用版本标记只做一次，
+// 写完之后你自己再手动更新，不会被这次的老快照覆盖回去。
+if(!ls('gold_upd_202609',0)){
+  const gu={cb:{v:'+23',d:'2026-07(8月数据要10月才发布)'},etf:{v:'+121',d:'2026-08(创纪录单月净流入)'},comex:{v:'23.20',d:'2026-09-08当周'}};
+  goldData.forEach(r=>{const u=gu[r.k];if(u){r.v=u.v;r.d=u.d}});
+  lss('gold-data',goldData);lss('gold_upd_202609',1);
+}
+// 央行购金/ETF持仓/COMEX净多头都没有能直连的JSONP实时接口，做不到跟股价一样自动刷新，
+// 这段是手工查证攒出来的历史序列(月度/周度，稀疏但都是真实数字，没有编造插值)，
+// 点卡片能看走势图，但这几张卡片的走势图不跟"实时行情"那些卡片一样会自动更新——
+// 除非我再手动帮你查一轮最新的点位加进来。数据来源：世界黄金协会月度报告、CFTC COT报告。
+const goldHist={
+  GOLD_CB:{dates:['2025-11','2025-12','2026-01','2026-02','2026-03','2026-04','2026-05','2026-06','2026-07'],
+    vals:[45,19,5,27,-30,19,41,51,23]},
+  GOLD_ETF:{dates:['2026-01','2026-02','2026-03','2026-04','2026-05','2026-06','2026-07','2026-08'],
+    vals:[120,26,-84,48,-16,-74,23,121]},
+  GOLD_COMEX:{dates:['2025-02-18','2025-05-20','2025-08-19','2025-11-18','2026-01-20','2026-03-17','2026-05-12','2026-07-21','2026-07-28','2026-08-04','2026-08-11','2026-08-18','2026-08-25','2026-09-01','2026-09-08'],
+    vals:[26.87,16.40,21.26,21.03,24.48,15.99,17.16,18.39,18.21,19.76,21.79,22.22,24.33,22.81,23.20]},
+};
+function getGoldHist(sym){const h=goldHist[sym];return h?{labels:h.dates,closes:h.vals}:null}
 function renderGold(){
   document.getElementById('gold-demand-grid').innerHTML=goldData.map(r=>`
-    <div class="gold-card">
+    <div class="gold-card clk" onclick="oc('GOLD_${r.k.toUpperCase()}','${r.l}')">
       <div class="gold-label">${r.l}</div>
       <div class="gold-val">${r.v||'—'}</div>
       <div class="gold-sub">${r.d||'未更新'} · ${r.src}</div>
@@ -392,6 +435,158 @@ function openGoldEdit(){
       <input id="gf-${r.k}-d" value="${r.d}" placeholder="如2026-07" style="flex:1;font-size:10px"/>
     </div></div>`).join('');
   ectx='gold';document.getElementById('eov').classList.add('on');
+}
+
+// ── 行业/主题指数估值 ──────────────────────
+// 中国8个具体行业(有色金属/家用电器/银行/非银金融/电力公用事业/白酒/通信/石油石化)
+// + 半导体/人工智能主题，美国11个GICS板块 + 半导体/AI/金属采矿主题，一共24张卡片。
+// cyclical:true 的是周期性行业，卡片左边会有橙色标记、PB会显得更突出——银行/非银这种
+// 金融股PB本来就是比PE更常用的估值锚，有色/石油/半导体这些看的是商品/芯片周期。
+// pePctl/pbPctl 是历史分位(0-100，跟本表PE/PB同源的才给，口径对不上的会在note里⚠说明)；
+// 美股这11个GICS板块目前没查到真正的百分位数据源，只有rangeNote这种"10年区间大致
+// 处于什么位置"的粗描述，不是精确分位，别当成一回事。查证于2026-09-11。
+const defaultSector=[
+  {k:'cn-chip',region:'cn',name:'半导体 · 中证半导体产业指数(931865)',pe:'135.54',pb:'',d:'2026-08-31',cyclical:true,
+    etf:{code:'512760',cn:'国联安中证半导体ETF',en:'Guolian An CSI Semiconductor ETF'},
+    note:'源:中证指数官方factsheet。PB多个来源(理杏仁/雪球/东方财富)读取时相互矛盾或被反爬拦截，没查到可信数字，暂缺。ETF为常识性选择，这次没有重新核实规模/跟踪误差'},
+  {k:'cn-ai',region:'cn',name:'人工智能 · 中证人工智能主题指数(930713)',pe:'47.61',pb:'5.41',d:'2026-09-11',cyclical:false,
+    etf:{code:'515980',cn:'华宝中证人工智能主题ETF',en:'Huabao CSI Artificial Intelligence Theme ETF'},
+    note:'源:etf.run。ETF为常识性选择，这次没有重新核实规模/跟踪误差'},
+  {k:'cn-metal',region:'cn',name:'有色金属 · 中证有色金属指数(000819.SH)',pe:'24.38',pb:'3.64',d:'2026-09-11',cyclical:true,
+    etf:{code:'512400',cn:'华夏中证有色金属ETF',en:'China AMC CSI Non-Ferrous Metals ETF'},
+    note:'源:etf.run。ETF为常识性选择，这次没有重新核实规模/跟踪误差'},
+  {k:'cn-appliance',region:'cn',name:'家用电器 · 申万一级行业指数(801110.SI)',pe:'15.47',pb:'2.28',d:'2026-08-18',cyclical:true,
+    etf:{code:'159996',cn:'国泰中证全指家用电器ETF(家电ETF)',en:'Guotai CSI All-Share Home Appliances ETF'},
+    note:'源:legulegu.com，股息率3.58%。没查到10年分位来源，暂缺'},
+  {k:'cn-bank',region:'cn',name:'银行 · 中证银行指数(399986，替代申万801780)',pe:'7.37',pb:'0.70',d:'2026-09-11',cyclical:true,
+    pePctl:'94.1',pePctlWin:'10Y',pePctlNote:'源:baifenwei.com，跟PE同源自洽，可信度较高',
+    pbPctl:'47.6',pbPctlWin:'10Y',pbPctlNote:'源:baifenwei.com，同源自洽',
+    etf:{code:'512800',cn:'华宝中证银行ETF(银行ETF)',en:'Huabao CSI Banks ETF'},
+    note:'申万801780页面这次一直被反爬拦截，改用同类的中证银行指数(399986)代替'},
+  {k:'cn-nonbank',region:'cn',name:'非银金融 · 沪深300非银行金融指数(H30035，替代申万801790)',pe:'11.07',pb:'1.21',d:'2026-09-11',cyclical:true,
+    pePctl:'0.03',pePctlWin:'上市以来',pePctlNote:'⚠源:etf.run，标注为等权PE口径，不是本表这个口径，数字本身别较真；但另一个更窄的证券指数(申万二级，不同来源)也显示10年分位7.12%，两边方向一致，指向"非银金融现在处于历史底部区域"这个结论是站得住的',
+    pbPctl:'6.19',pbPctlWin:'上市以来',pbPctlNote:'同上，口径有出入，方向参考',
+    etf:{code:'512070',cn:'易方达沪深300非银ETF(证券保险ETF)',en:'E Fund CSI 300 Non-Bank Financials ETF'},
+    note:'申万801790页面这次一直被反爬拦截，改用同类的沪深300非银行金融指数(H30035)代替'},
+  {k:'cn-utility',region:'cn',name:'电力/公用事业 · 申万一级行业指数(801160.SI)',pe:'19.64',pb:'1.76',d:'2026-07-31',cyclical:false,
+    etf:{code:'159158',cn:'景顺长城中证全指电力公用事业ETF(电力ETF)',en:'Invesco Great Wall CSI All-Share Electric Power & Utilities ETF'},
+    note:'源:legulegu.com，股息率2.69%。没查到10年分位来源，暂缺'},
+  {k:'cn-liquor',region:'cn',name:'白酒 · 中证白酒指数(399997)',pe:'20.04',pb:'4.30',d:'2026-08-14',cyclical:false,
+    pePctl:'17.0',pePctlWin:'10Y',pePctlNote:'源:baifenwei.com，跟PE同源自洽；legulegu另一版本PE19.14/PB3.95(2026-08-20)作交叉核对，数字很接近',
+    pbPctl:'2.7',pbPctlWin:'10Y',pbPctlNote:'源:baifenwei.com，同源自洽，处于10年极低位',
+    etf:{code:'512690',cn:'鹏华中证酒ETF(酒ETF)',en:'Penghua CSI Liquor ETF'},
+    note:''},
+  {k:'cn-telecom',region:'cn',name:'通信 · 申万一级行业指数(801770.SI)',pe:'29.51',pb:'2.79',d:'2026-08-24',cyclical:false,
+    etf:{code:'159507',cn:'广发国证通信ETF',en:'GF China Securities Communications ETF'},
+    note:'源:legulegu.com，股息率2.16%，没查到10年分位来源，暂缺。ETF选的是含运营商(移动/联通/电信)的国证通信指数，跟申万801770概念更贴；规模更大的515880(通信ETF，¥144亿)只覆盖通信设备，不含运营商，口径对不上，没选它'},
+  {k:'cn-oil',region:'cn',name:'石油石化 · 申万一级行业指数(801960.SI)',pe:'14.11',pb:'1.33',d:'2026-07-31',cyclical:true,
+    etf:{code:'159731',cn:'华夏中证石化产业ETF(石化ETF)',en:'China AMC CSI Petrochemical Industry ETF'},
+    note:'源:legulegu.com，股息率3.62%，没查到10年分位来源，暂缺。这只ETF跟踪的中证石化产业指数(000813)更侧重上游油气，是个小规模基金(约9亿元)，这个赛道里没有更贴切的大规模ETF'},
+  // ── 美国：半导体/AI/金属采矿主题（沿用之前查证的数据） ──
+  {k:'us-chip',region:'us',name:'半导体(主题) · 费城半导体指数 PHLX Semiconductor(SOX)',pe:'51.89',pb:'',d:'2026-09-09',cyclical:true,
+    etf:{code:'SOXQ',cn:'Invesco美国半导体ETF',en:'Invesco PHLX Semiconductor ETF (SOXQ)'},
+    note:'⚠指数本身不发布PE/PB，用直接跟踪SOX的SOXQ ETF代理，源:ETF Database；PB暂缺。注意别跟iShares SOXX搞混——SOXX从2021年起改跟踪另一个指数(ICE半导体)，PE明显更低(约28.6)，不是同一个东西'},
+  {k:'us-ai',region:'us',name:'人工智能(主题) · Indxx AI & Big Data指数',pe:'24.74',pb:'4.49',d:'2026年中',cyclical:false,
+    etf:{code:'AIQ',cn:'Global X人工智能与科技ETF',en:'Global X Artificial Intelligence & Technology ETF (AIQ)'},
+    note:'⚠Global X官网没写清楚这是TTM还是前瞻估值，当近似值参考，源:globalxetfs.com'},
+  {k:'us-metal',region:'us',name:'金属采矿(主题) · 标普金属采矿精选行业指数',pe:'15.39',pb:'2.21',d:'2026-06-30',cyclical:true,
+    etf:{code:'XME',cn:'SPDR标普金属采矿ETF',en:'SPDR S&P Metals & Mining ETF (XME)'},
+    note:'⚠PE是SSGA factsheet里的FY1前瞻预测值，不是TTM，没法跟本表其它PE直接比，源:ssga.com'},
+  // ── 美国：GICS 11大板块（标普精选行业SPDR系列，全部有直连ETF） ──
+  {k:'us-energy',region:'us',name:'能源 Energy',pe:'14.18',pb:'1.99',d:'2026-09',cyclical:true,
+    rangeNote:'10年区间6.58–70.3，中位16.2 → 低于中位',
+    etf:{code:'XLE',cn:'SPDR能源精选行业ETF',en:'Energy Select Sector SPDR Fund (XLE)'},
+    note:'PE为GuruFocus的TTM口径；SSGA官网只公布前瞻FY1口径PE=12.74(2026-09-10)，两者不是一回事，没有真正的历史分位数据源，只能给区间粗略定位'},
+  {k:'us-materials',region:'us',name:'原材料 Materials',pe:'22.31',pb:'2.62',d:'2026-09',cyclical:true,
+    rangeNote:'10年区间13.2–87.3，中位19.8 → 略高于中位',
+    etf:{code:'XLB',cn:'SPDR原材料精选行业ETF',en:'Materials Select Sector SPDR Fund (XLB)'},
+    note:'PE为GuruFocus TTM口径；SSGA前瞻FY1口径PE=17.50，没有真正的历史分位数据源'},
+  {k:'us-industrials',region:'us',name:'工业 Industrials',pe:'28.07',pb:'6.21',d:'2026-09',cyclical:true,
+    rangeNote:'10年区间15.7–87.98，中位21.08 → 高于中位；PB(6.21)接近10年高点',
+    etf:{code:'XLI',cn:'SPDR工业精选行业ETF',en:'Industrial Select Sector SPDR Fund (XLI)'},
+    note:'PE为GuruFocus TTM口径；SSGA前瞻FY1口径PE=24.41，没有真正的历史分位数据源'},
+  {k:'us-consdisc',region:'us',name:'非必需消费品 Consumer Discretionary',pe:'25.76',pb:'5.41',d:'2026-09',cyclical:true,
+    rangeNote:'10年区间17.08–61.86，中位24 → 略高于中位',
+    etf:{code:'XLY',cn:'SPDR非必需消费品精选行业ETF',en:'Consumer Discretionary Select Sector SPDR Fund (XLY)'},
+    note:'PE为GuruFocus TTM口径；SSGA前瞻FY1口径PE=22.29，没有真正的历史分位数据源'},
+  {k:'us-consstaple',region:'us',name:'必需消费品 Consumer Staples',pe:'21.69',pb:'3.08',d:'2026-09',cyclical:false,
+    rangeNote:'10年区间18.9–43.8，中位23.93 → 低于中位',
+    etf:{code:'XLP',cn:'SPDR必需消费品精选行业ETF',en:'Consumer Staples Select Sector SPDR Fund (XLP)'},
+    note:'PE为GuruFocus TTM口径；SSGA前瞻FY1口径PE=19.59，没有真正的历史分位数据源'},
+  {k:'us-health',region:'us',name:'医疗保健 Health Care',pe:'28.34',pb:'4.23',d:'2026-09',cyclical:false,
+    rangeNote:'10年区间19.8–83.99，中位23.9 → 高于中位',
+    etf:{code:'XLV',cn:'SPDR医疗保健精选行业ETF',en:'Health Care Select Sector SPDR Fund (XLV)'},
+    note:'PE为GuruFocus TTM口径；SSGA前瞻FY1口径PE=19.72，没有真正的历史分位数据源'},
+  {k:'us-financials',region:'us',name:'金融 Financials',pe:'13.64',pb:'1.92',d:'2026-09',cyclical:true,
+    rangeNote:'10年区间9.7–74.54，中位14.1 → 略低于中位；PB(1.92)高于中位',
+    etf:{code:'XLF',cn:'SPDR金融精选行业ETF',en:'Financial Select Sector SPDR Fund (XLF)'},
+    note:'PE为GuruFocus TTM口径；SSGA前瞻FY1口径PE=15.86，没有真正的历史分位数据源'},
+  {k:'us-tech',region:'us',name:'信息技术 Information Technology',pe:'33.37',pb:'11.16',d:'2026-09',cyclical:true,
+    rangeNote:'10年区间19.4–94.08，中位27.87 → 高于中位；PB(11.16)已接近10年高点',
+    etf:{code:'XLK',cn:'SPDR科技精选行业ETF',en:'Technology Select Sector SPDR Fund (XLK)'},
+    note:'PE为GuruFocus TTM口径；SSGA前瞻FY1口径PE=25.79，没有真正的历史分位数据源'},
+  {k:'us-comm',region:'us',name:'通信服务 Communication Services',pe:'14.87',pb:'2.51',d:'2026-09',cyclical:false,
+    rangeNote:'10年区间13.6–70.08，中位22.1 → 明显低于中位，接近10年低点',
+    etf:{code:'XLC',cn:'SPDR通信服务精选行业ETF',en:'Communication Services Select Sector SPDR Fund (XLC)'},
+    note:'PE为GuruFocus TTM口径；SSGA前瞻FY1口径PE=12.70。XLC 2018年才成立，"10年区间"含成立前的回溯拼接数据，参考价值打折扣'},
+  {k:'us-utility',region:'us',name:'公用事业 Utilities',pe:'22.33',pb:'1.92',d:'2026-09',cyclical:false,
+    rangeNote:'10年区间16–77.97，中位23.2 → 略低于中位',
+    etf:{code:'XLU',cn:'SPDR公用事业精选行业ETF',en:'Utilities Select Sector SPDR Fund (XLU)'},
+    note:'PE为GuruFocus TTM口径；SSGA前瞻FY1口径PE=17.63，没有真正的历史分位数据源'},
+  {k:'us-realestate',region:'us',name:'房地产 Real Estate',pe:'33.75',pb:'2.56',d:'2026-09',cyclical:true,
+    rangeNote:'10年区间26.1–169.76，中位34.5 → 略低于中位',
+    etf:{code:'XLRE',cn:'SPDR房地产精选行业ETF',en:'Real Estate Select Sector SPDR Fund (XLRE)'},
+    note:'PE为GuruFocus TTM口径；SSGA前瞻FY1口径PE=34.80。XLRE 2015年才成立，"10年区间"同样含回溯拼接数据'},
+];
+let sectorData=ls('sector-data',defaultSector);
+{
+  const byKey={};sectorData.forEach(r=>{byKey[r.k]=r});
+  sectorData=defaultSector.map(def=>{
+    const old=byKey[def.k];
+    if(!old)return def;
+    return{...def,pe:old.pe||def.pe,pb:old.pb||def.pb,d:old.d||def.d,
+      pePctl:old.pePctl||def.pePctl,pbPctl:old.pbPctl||def.pbPctl};
+  });
+  lss('sector-data',sectorData);
+}
+function sectorPctlBadge(val,win,warn){
+  if(!val)return'';
+  return`<span class="spctl${warn?' warn':''}">${win||''} ${val}%</span>`;
+}
+function renderSector(){
+  const esc=s=>(s||'').replace(/&/g,'&amp;').replace(/"/g,'&quot;');
+  ['cn','us'].forEach(reg=>{
+    const el=document.getElementById(`sector-${reg}-grid`);if(!el)return;
+    el.innerHTML=sectorData.filter(r=>r.region===reg).map(r=>{
+      const peWarn=r.pePctlNote&&r.pePctlNote.indexOf('⚠')===0;
+      const pbWarn=r.pbPctlNote&&r.pbPctlNote.indexOf('⚠')===0;
+      const noteParts=[r.note,r.pePctlNote,r.pbPctlNote].filter(Boolean);
+      const etfLine=r.etf?`${r.etf.code} ${r.etf.cn}<br>${r.etf.en}`:'';
+      return`<div class="sector-card${r.cyclical?' cyc':''}" title="${esc(noteParts.join(' | '))}">
+        <div class="sector-top"><div class="sector-name">${r.name}</div>${r.cyclical?'<span class="sector-cyc-tag">周期</span>':''}</div>
+        <div class="sector-val">PE ${r.pe||'—'}${sectorPctlBadge(r.pePctl,r.pePctlWin,peWarn)}</div>
+        ${r.pb?`<div class="sector-val" style="font-size:12px">PB ${r.pb}${sectorPctlBadge(r.pbPctl,r.pbPctlWin,pbWarn)}</div>`:''}
+        ${r.rangeNote?`<div class="sector-range">${r.rangeNote}</div>`:''}
+        ${etfLine?`<div class="sector-etf">${etfLine}</div>`:''}
+        <div class="sector-date">${r.d||'未更新'}${noteParts.length?' · 悬停看说明':''}</div>
+      </div>`;
+    }).join('');
+  });
+}
+function openSectorEdit(){
+  document.getElementById('etit').textContent='编辑行业指数估值';
+  document.getElementById('efields').innerHTML=sectorData.map(r=>`
+    <div style="border:1px solid var(--border);border-radius:6px;padding:9px;margin-bottom:7px">
+      <div style="font-size:10px;font-weight:600;margin-bottom:5px">${r.name}</div>
+      <div style="display:grid;grid-template-columns:1fr 1fr 1fr 1fr 1fr;gap:5px">
+        <div class="field"><label>PE</label><input id="sf-${r.k}-pe" value="${r.pe}"/></div>
+        <div class="field"><label>PB</label><input id="sf-${r.k}-pb" value="${r.pb||''}"/></div>
+        <div class="field"><label>PE分位%</label><input id="sf-${r.k}-pePctl" value="${r.pePctl||''}"/></div>
+        <div class="field"><label>PB分位%</label><input id="sf-${r.k}-pbPctl" value="${r.pbPctl||''}"/></div>
+        <div class="field"><label>日期</label><input id="sf-${r.k}-d" value="${r.d}" style="font-size:10px"/></div>
+      </div>
+    </div>`).join('');
+  ectx='sector';document.getElementById('eov').classList.add('on');
 }
 
 // ── VALUATION ─────────────────────────────
@@ -512,7 +707,7 @@ const dm={
     {k:'cpi',l:'CPI通胀率',v:'',prev:'',d:'',dir:'neutral'},
     {k:'ppi',l:'PPI生产者价格',v:'',prev:'',d:'',dir:'neutral'},
     {k:'pm',l:'PMI制造业（官方）',v:'',prev:'',d:'',dir:'neutral'},
-    {k:'ps',l:'PMI服务业（财新）',v:'',prev:'',d:'',dir:'neutral'},
+    {k:'ps',l:'PMI服务业（RatingDog，原财新）',v:'',prev:'',d:'',dir:'neutral'},
     {k:'m2',l:'M2货币供应 YoY',v:'',prev:'',d:'',dir:'neutral'},
   ],
 };
@@ -528,6 +723,34 @@ let md=ls('md',dm);
     });
   });
   lss('md',md);
+}
+// 一次性更新到8月/最新数据（2026-09-11查证，见对话）：这次是用户明确要求直接写进去，
+// 不是像黄金那次一样只报告让手动填。用一个版本标记只做一次——写完之后你自己再手动改成
+// 9月数据，不会被这次的老快照覆盖回去。财新PMI从2025年8月数据起改名"RatingDog"了，标签也一并改了。
+if(!ls('md_upd_202609',0)){
+  const upd={
+    us:{
+      cpi:{v:'3.4%',prev:'3.4%',d:'2026-08',dir:'neutral'},
+      ccpi:{v:'2.4%',prev:'2.5%',d:'2026-08',dir:'down'},
+      nfp:{v:'+16.2万',prev:'+2.1万',d:'2026-08',dir:'up'},
+      pm:{v:'54.6',prev:'55.6',d:'2026-08',dir:'down'},
+      ps:{v:'55.4',prev:'54.1',d:'2026-08',dir:'up'},
+      fed:{v:'3.50%-3.75%',prev:'3.50%-3.75%',d:'2026-07-29(9月议息会议9/15-16还没开)',dir:'neutral'},
+    },
+    cn:{
+      gdp:{v:'4.3%',prev:'5.0%',d:'2026年Q2(7/16发布)',dir:'down'},
+      cpi:{v:'0.8%',prev:'0.5%',d:'2026-08',dir:'up'},
+      ppi:{v:'3.8%',prev:'3.5%',d:'2026-08',dir:'up'},
+      pm:{v:'49.8',prev:'49.2',d:'2026-08',dir:'up'},
+      ps:{v:'51.4',prev:'50.4',d:'2026-08',dir:'up'},
+      m2:{v:'7.7%',prev:'8.0%',d:'2026-07(8月数据截至9/11还没公布)',dir:'down'},
+    },
+  };
+  ['us','cn'].forEach(reg=>{
+    md[reg].forEach(x=>{const u=upd[reg][x.k];if(!u)return;x.v=u.v;x.prev=u.prev;x.d=u.d;x.dir=u.dir;});
+  });
+  lss('md',md);
+  lss('md_upd_202609',1);
 }
 function rm(r){
   document.getElementById(`${r}-m`).innerHTML=md[r].map(x=>{
@@ -677,9 +900,21 @@ async function init(){
 
 // ── CHARTS ────────────────────────────────
 const charts={};const ranges={sp:'1y',dx:'1y'};
-async function getEMklineRaw(secid,range){
+// YTD 用今年1月1日到今天的天数；其它区间还是固定天数。区间跨度>=1年的，
+// 横坐标要看得出年份，所以标签格式按区间区分：>=1年用"YYYY-MM"，否则用"MM-DD"。
+function rangeBegDate(range){
+  if(range==='ytd'){
+    const now=new Date();
+    return `${now.getFullYear()}0101`;
+  }
   const days={'1mo':30,'3mo':90,'6mo':180,'1y':365,'3y':1095,'5y':1825}[range]||365;
-  const beg=new Date(Date.now()-days*86400000).toISOString().slice(0,10).replace(/-/g,'');
+  return new Date(Date.now()-days*86400000).toISOString().slice(0,10).replace(/-/g,'');
+}
+function fmtDateLabel(d,range){
+  return(range==='1y'||range==='3y'||range==='5y')?d.slice(0,7):d.slice(5);
+}
+async function getEMklineRaw(secid,range){
+  const beg=rangeBegDate(range);
   try{
     const url=`https://push2his.eastmoney.com/api/qt/stock/kline/get?fields1=f1,f2,f3,f4,f5&fields2=f51,f52,f53,f54,f55,f56&klt=101&fqt=0&secid=${encodeURIComponent(secid)}&beg=${beg}&end=20500101&lmt=2000`;
     const j=await jsonp(url);
@@ -692,7 +927,7 @@ async function getEMklineRaw(secid,range){
 async function getEMkline(secid,range){
   const raw=await getEMklineRaw(secid,range);
   if(!raw)return null;
-  return{labels:raw.dates.map(d=>d.slice(5)),closes:raw.closes};
+  return{labels:raw.dates.map(d=>fmtDateLabel(d,range)),closes:raw.closes};
 }
 // 十年/两年美债收益率：不用 FRED（没有 CORS、也没有 JSONP，浏览器直连必挂，
 // 这也是最早那版会一直转圈的原因）。也不用东方财富"数据中心"那个专题接口
@@ -718,7 +953,7 @@ async function getSpreadHist(range){
   const m2={};r2.dates.forEach((d,i)=>{if(r2.closes[i]!=null&&!isNaN(r2.closes[i]))m2[d]=r2.closes[i]});
   const labels=[],closes=[];
   r10.dates.forEach((d,i)=>{
-    if(m2[d]!=null&&r10.closes[i]!=null&&!isNaN(r10.closes[i])){labels.push(d.slice(5));closes.push(+(r10.closes[i]-m2[d]).toFixed(3))}
+    if(m2[d]!=null&&r10.closes[i]!=null&&!isNaN(r10.closes[i])){labels.push(fmtDateLabel(d,range));closes.push(+(r10.closes[i]-m2[d]).toFixed(3))}
   });
   return{labels,closes};
 }
@@ -752,15 +987,22 @@ async function sr(id,range,btn){
 let dcurSym='',dch=null;
 async function oc(sym,label){
   dcurSym=sym;document.getElementById('dtit').textContent=label+' · 走势图';
+  const dchgEl=document.getElementById('dchg');if(dchgEl){dchgEl.textContent='';dchgEl.className='dchg'}
   document.getElementById('dov').classList.add('on');
+  const isGold=sym.startsWith('GOLD_');
+  // 黄金供需这几项没有实时接口，只有一份手工查证的历史序列，没有"区间"可选，
+  // 把范围按钮行藏起来，直接显示全部数据。
+  const mtbtnsEl=document.querySelector('.mtbtns');if(mtbtnsEl)mtbtnsEl.style.display=isGold?'none':'';
   document.querySelectorAll('.mtbtns .tbtn').forEach((b,i)=>b.classList.toggle('on',i===0));
-  await ld('1mo');
+  await ld(isGold?'all':'1mo');
 }
 function cd(){document.getElementById('dov').classList.remove('on');if(dch){dch.destroy();dch=null}}
 async function dr(r,btn){document.querySelectorAll('.mtbtns .tbtn').forEach(b=>b.classList.remove('on'));btn.classList.add('on');await ld(r)}
 async function ld(range){
   let data=null;
-  if(dcurSym==='SPREAD')data=await getSpreadHist(range);
+  const isGold=dcurSym.startsWith('GOLD_');
+  if(isGold)data=getGoldHist(dcurSym);
+  else if(dcurSym==='SPREAD')data=await getSpreadHist(range);
   else if(dcurSym==='US10Y')data=await getEMkline('171.US10Y',range);
   else if(dcurSym==='US2Y')data=await getEMkline('171.US2Y',range);
   else data=await getEMkline(dcurSym,range);
@@ -769,6 +1011,24 @@ async function ld(range){
   const last=data.closes.filter(Boolean).slice(-1)[0];
   const first=data.closes.find(v=>v!=null);
   const color=last>=first?'rgb(22,163,74)':'rgb(220,38,38)';
+  // 涨跌幅%：国债收益率/剪刀差本身已经是百分比数字，"涨跌幅的百分比"没意义，
+  // 这几个改成直接显示变动了多少个百分点(pp)；其它正常按百分比涨跌幅算。
+  // 黄金供需这几项是"净流量/持仓变动"数字，算涨跌幅没有干净的含义，直接不显示。
+  const dchgEl=document.getElementById('dchg');
+  if(dchgEl){
+    const isRate=dcurSym==='US10Y'||dcurSym==='US2Y'||dcurSym==='SPREAD';
+    if(isGold||first==null||last==null||(!isRate&&first===0)){
+      dchgEl.textContent='';dchgEl.className='dchg';
+    }else if(isRate){
+      const diff=last-first;
+      dchgEl.textContent=(diff>=0?'+':'')+diff.toFixed(2)+'pp';
+      dchgEl.className='dchg '+(diff>=0?'up':'down');
+    }else{
+      const pct=(last-first)/Math.abs(first)*100;
+      dchgEl.textContent=(pct>=0?'+':'')+pct.toFixed(2)+'%';
+      dchgEl.className='dchg '+(pct>=0?'up':'down');
+    }
+  }
   dch=new Chart(document.getElementById('dch').getContext('2d'),{
     type:'line',data:{labels:data.labels,datasets:[{label:dcurSym,data:data.closes,borderColor:color,backgroundColor:color.replace(')',',0.07)').replace('rgb','rgba'),borderWidth:2,pointRadius:0,tension:.3,fill:true}]},
     options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false},tooltip:{bodyFont:{family:'monospace',size:10}}},scales:{x:{ticks:{font:{size:9},maxTicksLimit:12,color:'#9CA3AF'},grid:{display:false}},y:{ticks:{font:{size:9},color:'#6B7280',maxTicksLimit:6},grid:{color:'#F3F4F6'}}}}
@@ -828,6 +1088,11 @@ function se(){
       if(v)r.v=v.value;if(d)r.d=d.value;
     });
     lss('gold-data',goldData);renderGold();
+  } else if(ectx==='sector'){
+    sectorData.forEach(r=>{
+      ['pe','pb','pePctl','pbPctl','d'].forEach(f=>{const el=document.getElementById(`sf-${r.k}-${f}`);if(el)r[f]=el.value});
+    });
+    lss('sector-data',sectorData);renderSector();
   } else if(ectx==='cn10y'){
     const v=document.getElementById('cf-v');const d=document.getElementById('cf-d');
     if(v)cn10y.v=v.value;if(d)cn10y.d=d.value;
@@ -914,7 +1179,7 @@ function epdf(i){
 document.getElementById('dov').addEventListener('click',e=>{if(e.target===document.getElementById('dov'))cd()});
 document.getElementById('eov').addEventListener('click',e=>{if(e.target===document.getElementById('eov'))ce()});
 
-function startApp(){rvt();rm('us');rm('cn');rj();rs();renderGold();renderCN10Y();init();setInterval(init,5*60*1000)}
+function startApp(){rvt();rm('us');rm('cn');rj();rs();renderGold();renderSector();renderCN10Y();init();setInterval(init,5*60*1000)}
 if(ls('auth','')=== PW)startApp();
 </script>
 </body>
