@@ -156,6 +156,32 @@ main{flex:1;overflow-y:auto;padding:18px 22px 40px}
 .bcancel{padding:6px 13px;border:1px solid var(--border);border-radius:6px;background:#fff;cursor:pointer;font-size:12px}
 .bsave{padding:6px 13px;background:var(--accent);color:#fff;border:none;border-radius:6px;cursor:pointer;font-size:12px;font-weight:500}
 ::-webkit-scrollbar{width:4px;height:4px}::-webkit-scrollbar-thumb{background:#E5E7EB;border-radius:2px}
+/* HOLDINGS / 我的资产配置 */
+.hold-stat{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-bottom:14px}
+.hold-donuts{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:16px}
+.donut2-card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:14px;box-shadow:var(--shadow);display:flex;gap:16px;align-items:center}
+.donut2-wrap{position:relative;width:120px;height:120px;flex-shrink:0}
+.donut2-wrap svg{width:100%;height:100%;transform:rotate(-90deg)}
+.donut2-center{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;pointer-events:none}
+.donut2-center .d1{font-size:9px;color:var(--text3)}
+.donut2-center .d2{font-size:13px;font-weight:700;font-family:var(--mono)}
+.donut2-legend{display:flex;flex-direction:column;gap:5px;flex:1}
+.d2row{display:flex;align-items:center;gap:7px;font-size:11px}
+.d2sw{width:9px;height:9px;border-radius:2px;flex-shrink:0}
+.d2name{flex:1;color:var(--text2)}
+.d2pct{font-family:var(--mono);font-weight:700;font-size:11px}
+.htable{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);overflow:hidden;box-shadow:var(--shadow)}
+.hhdr{display:grid;grid-template-columns:1.7fr .7fr .7fr .7fr .9fr 1fr .7fr;padding:7px 13px;background:var(--bg);border-bottom:1px solid var(--border)}
+.hhdr span{font-size:9px;font-weight:700;color:var(--text3);text-transform:uppercase;letter-spacing:.06em}
+.hrow{display:grid;grid-template-columns:1.7fr .7fr .7fr .7fr .9fr 1fr .7fr;padding:8px 13px;border-bottom:1px solid var(--border);align-items:center}
+.hrow:last-child{border-bottom:none}
+.hname{font-size:12px;font-weight:600}
+.hcell{font-size:11px;font-family:var(--mono);color:var(--text2)}
+.hcat{font-size:9px;font-weight:700;padding:2px 6px;border-radius:10px;color:#fff;display:inline-block}
+.hnote{font-size:9px;color:var(--text3);margin-top:1px}
+.hedit-row{border:1px solid var(--border);border-radius:8px;padding:10px;margin-bottom:8px;position:relative}
+.hedit-del{position:absolute;top:8px;right:8px;background:none;border:none;color:var(--down);cursor:pointer;font-size:12px}
+@media(max-width:900px){.hold-donuts{grid-template-columns:1fr}.hhdr,.hrow{grid-template-columns:1.4fr .7fr .7fr repeat(3,1fr)}}
 @media(max-width:1100px){.g5{grid-template-columns:repeat(3,1fr)}.g4{grid-template-columns:repeat(2,1fr)}.cgrid,.mgrid{grid-template-columns:1fr}}
 @media(max-width:700px){aside{display:none}.g5,.g4{grid-template-columns:repeat(2,1fr)}}
 </style>
@@ -187,6 +213,10 @@ main{flex:1;overflow-y:auto;padding:18px 22px 40px}
     <div class="jlist" id="jlist"></div>
     <div class="jcompose">
       <textarea id="jtxt" placeholder="投资想法、决策依据、市场观察..."></textarea>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:5px;margin-top:5px">
+        <input id="jstop" placeholder="止损/止盈位，如：跌破1200卖1/3" style="font-size:10px;border:1px solid var(--border);border-radius:4px;padding:4px 6px;width:100%"/>
+        <input id="jreview" type="date" style="font-size:10px;border:1px solid var(--border);border-radius:4px;padding:4px 6px;width:100%"/>
+      </div>
       <div class="jfoot"><input id="jtags" placeholder="标签，如：黄金 美债"/><button class="btn btn-p" onclick="saveJ()">保存</button></div>
     </div>
   </div>
@@ -289,6 +319,29 @@ main{flex:1;overflow-y:auto;padding:18px 22px 40px}
     <div class="mcard"><div class="mtitle"><span>🇺🇸 美国宏观</span><button class="ebtn" onclick="openME('us')">编辑</button></div><div id="us-m"></div></div>
     <div class="mcard"><div class="mtitle"><span>🇨🇳 中国宏观</span><button class="ebtn" onclick="openME('cn')">编辑</button></div><div id="cn-m"></div></div>
   </div>
+
+  <div class="sec-hdr" style="margin-top:26px"><span class="sec-label">第三部分 · 我的资产配置</span><div class="sec-line"></div><button class="ebtn" onclick="openHoldingsEdit()">编辑持仓</button></div>
+  <div class="hold-stat">
+    <div class="card" style="cursor:default"><div class="cl">总市值(折人民币)</div><div class="cv" id="h-total">—</div><div class="cts" id="h-total-ts"></div></div>
+    <div class="card" style="cursor:default"><div class="cl">后卫</div><div class="cv" id="h-defense">—</div></div>
+    <div class="card" style="cursor:default"><div class="cl">中锋</div><div class="cv" id="h-mid">—</div></div>
+    <div class="card" style="cursor:default"><div class="cl">前锋</div><div class="cv" id="h-forward">—</div></div>
+  </div>
+  <div class="hold-donuts">
+    <div class="donut2-card">
+      <div class="donut2-wrap" id="donut-hstyle"><svg viewBox="0 0 100 100"></svg><div class="donut2-center"><div class="d1">风格</div><div class="d2" id="donut-hstyle-c"></div></div></div>
+      <div class="donut2-legend" id="legend-hstyle"></div>
+    </div>
+    <div class="donut2-card">
+      <div class="donut2-wrap" id="donut-hccy"><svg viewBox="0 0 100 100"></svg><div class="donut2-center"><div class="d1">货币</div><div class="d2" id="donut-hccy-c"></div></div></div>
+      <div class="donut2-legend" id="legend-hccy"></div>
+    </div>
+  </div>
+  <div class="htable">
+    <div class="hhdr"><span>名称</span><span>分类</span><span>币种</span><span>数量</span><span>现价/净值</span><span>市值(¥)</span><span>更新</span></div>
+    <div id="hrows"></div>
+  </div>
+  <div class="vcaption" style="margin-top:8px">"现价"一栏，实时模式(填了行情代码)会跟着上面第一部分的行情每5分钟一起自动刷新；手动模式(私募、保险、港股等)需要你自己在"编辑持仓"里定期更新。美元计价的持仓按当前实时人民币汇率折算后再计入总市值和两张饼图。行情代码前缀是常见惯例：沪A股 1.代码／深A股 0.代码／纳斯达克 105.代码／纽交所 106.代码／NYSE Arca上市的ETF 107.代码／港股 116.代码——这几个前缀我这边网络环境没法逐个连东方财富接口验证，如果某一行价格一直显示"—"，大概率是前缀猜错了，去编辑里换个数字试试，不影响其它行照常刷新。</div>
 </main>
 </div>
 </div>
@@ -627,6 +680,13 @@ const dv=[
     pePctl:'',pePctlWin:'',pePctlNote:'市场上PE口径打架严重：官方18.87／乐咕乐股(市场平均法)14.33／baifenwei自身口径11.76，分位数只能算在这三个都不是的口径上，为避免误导先不显示',
     pbPctl:'',pbPctlWin:'',pbPctlNote:'baifenwei给出PB约1.26，但鉴于它的PE口径已经跟其他来源对不上，这个PB也没交叉验证过，先不显示',
     peStatic:'',peStaticNote:'港股没有区分"静态/TTM"的常规做法，暂缺；而且PE口径本身已经有争议(见PE说明)，加一个静态口径只会更乱'},
+  {id:'CSIDIV',name:'中证红利',pe:'12.21',fwdEps:'',pb:'1.07',dy:'5.48',erp:'',ts:'2026-09-14',
+    pePctl:'31.63',pePctlWin:'10Y',pePctlNote:'源:etf.run，2026-09-14查证，处于近十年偏低区间(历史范围8.31–45.87倍，均值16.52倍)',
+    pbPctl:'11.80',pbPctlWin:'10Y',pbPctlNote:'源:etf.run，同日查证，处于近十年极低区间(历史范围0.90–3.69倍，均值1.77倍)',
+    peStatic:'',peStaticNote:'未查证，A股按理应该有对应静态口径，这次没找，别的字段抓紧查完先发布了'},
+  {id:'HSTECH',name:'恒生科技',pe:'22.54',fwdEps:'',pb:'',dy:'',erp:'',ts:'2026-09-11',
+    pePctl:'35.96',pePctlWin:'口径未注明',pePctlNote:'⚠源:itiger.com，2026-09-11查证；另一信源(腾讯新闻转引研报，2026-03-27)给出PE-TTM=20.8倍、"处于近20%分位"的说法，两边PE绝对值和分位区间都对不上(22.54 vs 20.8，35.96% vs 20%)，大概率计算窗口/口径不同，只能确认"目前估值不算贵"这个大方向，具体数字别太当真',
+    pbPctl:'',pbPctlWin:'',pbPctlNote:'没查到可靠的PB数值来源，暂缺'},
 ];
 let vd=ls('vd',dv);
 // 兼容旧数据：之前存的是空值默认表，现在有查到的数字了，把空字段补上；
@@ -653,6 +713,10 @@ let vd=ls('vd',dv);
   if(a500&&a500.pePctl==='65.15'){a500.pePctl='';a500.pePctlWin='';a500.pePctlNote='唯一找到的分位源(etf.run)用的是等权PE(32.24)，比本表加权PE(16.09)高约1倍，口径差太多，为避免误导先不显示；A500 2024年10月才成立，本该用"成立以来"代替10年窗口，但目前没有同口径的数据源';a500.pbPctl='';a500.pbPctlWin='';a500.pbPctlNote='同样问题，etf.run的PB(2.72)是等权口径，跟本表(1.69)对不上，先不显示';}
   const hsiF=vd.find(r=>r.id==='HSI');
   if(hsiF&&hsiF.pePctl==='70.3'){hsiF.pePctl='';hsiF.pePctlWin='';hsiF.pePctlNote='市场上PE口径打架严重：官方18.87／乐咕乐股(市场平均法)14.33／baifenwei自身口径11.76，分位数只能算在这三个都不是的口径上，为避免误导先不显示';hsiF.pbPctl='';hsiF.pbPctlWin='';hsiF.pbPctlNote='baifenwei给出PB约1.26，但鉴于它的PE口径已经跟其他来源对不上，这个PB也没交叉验证过，先不显示';}
+  // 补充新增的指数(中证红利/恒生科技)：如果之前保存的vd里还没有，追加进去；已经手动改过的老行不动
+  const haveIds=new Set(vd.map(r=>r.id));
+  const toAddV=dv.filter(d=>!haveIds.has(d.id));
+  if(toAddV.length)vd=vd.concat(toAddV);
   lss('vd',vd);
 }
 
@@ -764,6 +828,191 @@ function rm(r){
   }).join('');
 }
 
+// ── HOLDINGS (我的资产配置) ───────────────
+// 默认这几行里，招商银行保险350万、桥水中国200万(待确认)是这几轮对话里核实过的真实数字；
+// 其余持仓(茅台/美的/腾讯/黑翼CTA/嘉信各个ETF)只带了名称/分类/币种和一个示例行情代码，
+// 数量和手动价格都留空——不编数字，你自己在"编辑持仓"里填真实数量。
+// 美股代码前缀(105纳斯达克/106纽交所/107 NYSE Arca/116港股)是通用惯例，这边网络环境没法
+// 逐个连东方财富接口验证，如果某一行价格一直显示"—"，大概率是前缀猜错了，去编辑里换个数字
+// 试试即可，不影响其它行照常刷新。
+const CAT_COLOR={'后卫':'#2a78d6','中锋':'#1baf7a','前锋':'#eb6834'};
+const CCY_COLOR={'RMB':'#008300','USD':'#eda100','WRAP':'#4a3aa7','BW':'#e87ba4'};
+const CCY_LABEL={'RMB':'人民币直接持有','USD':'美元(嘉信等)','WRAP':'人民币包装的境外资产','BW':'桥水/全球多资产'};
+const defaultHoldings=[
+  {id:'ins',name:'招商银行保险',cat:'后卫',ccy:'RMB',mode:'manual',secid:'',qty:1,price:3500000,note:'锁定到2032年，年息4%，当底仓'},
+  {id:'bw',name:'桥水中国（待确认）',cat:'中锋',ccy:'BW',mode:'manual',secid:'',qty:1,price:2000000,note:'配置宝赎回后申购，尚未确认成交'},
+  {id:'mt',name:'贵州茅台',cat:'前锋',ccy:'RMB',mode:'live',secid:'1.600519',qty:'',price:'',note:''},
+  {id:'md',name:'美的集团',cat:'前锋',ccy:'RMB',mode:'live',secid:'0.000333',qty:'',price:'',note:''},
+  {id:'tc',name:'腾讯控股（南向通）',cat:'前锋',ccy:'WRAP',mode:'manual',secid:'',qty:'',price:'',note:'港股，手动定期更新市值(人民币)'},
+  {id:'cta',name:'华泰涨乐通·黑翼CTA+A500',cat:'前锋',ccy:'RMB',mode:'manual',secid:'',qty:'',price:'',note:'锁定到2027年1月，私募净值自己更新'},
+  {id:'sgov',name:'嘉信·SGOV(短债)',cat:'后卫',ccy:'USD',mode:'live',secid:'107.SGOV',qty:'',price:'',note:''},
+  {id:'ivv',name:'嘉信·IVV(标普500ETF)',cat:'中锋',ccy:'USD',mode:'live',secid:'107.IVV',qty:'',price:'',note:''},
+  {id:'qqq',name:'嘉信·QQQ(纳指ETF)',cat:'中锋',ccy:'USD',mode:'live',secid:'105.QQQ',qty:'',price:'',note:'前缀不确定，—就换106或107试试'},
+  {id:'allw',name:'嘉信·ALLW(桥水全天候ETF)',cat:'中锋',ccy:'USD',mode:'live',secid:'107.ALLW',qty:'',price:'',note:'前缀不确定，—就换105或106试试'},
+  {id:'brkb',name:'嘉信·BRK.B',cat:'前锋',ccy:'USD',mode:'live',secid:'106.BRK_B',qty:'',price:'',note:'代码写法不确定，—就试试106.BRKB或107.BRK_B'},
+  {id:'cash',name:'嘉信·现金',cat:'后卫',ccy:'USD',mode:'manual',secid:'',qty:'',price:'',note:'手动模式，按美元金额填写'},
+  // ↓这一批是2026-09-14补齐的：原来只挑了几个示例持仓，你说"资产还没有齐"，
+  // 对照诊断文档里的口径把剩下的都补上了。数量/手动价格照样留空，不编数字。
+  {id:'guohe',name:'国合量化多因子(基金)',cat:'前锋',ccy:'RMB',mode:'manual',secid:'',qty:'',price:'',note:'原表前锋里的场外基金，代码/净值你自己查'},
+  {id:'jiafang',name:'嘉方睿骨金ETF',cat:'前锋',ccy:'RMB',mode:'manual',secid:'',qty:'',price:'',note:'场内基金，知道代码可以自己改成实时模式'},
+  {id:'yifangda',name:'易方达黄金ETF',cat:'前锋',ccy:'RMB',mode:'manual',secid:'',qty:'',price:'',note:'场内基金，知道代码可以自己改成实时模式'},
+  {id:'peizhibao',name:'配置宝(超额收益/五年期产品)',cat:'中锋',ccy:'RMB',mode:'manual',secid:'',qty:'',price:'',note:'原表中锋656.5万里，扣掉转去桥水中国的200万后剩下的部分，可能不止一个产品，按实际账户拆分/填余额'},
+  {id:'cashother',name:'现金/短债(其他账户)',cat:'后卫',ccy:'RMB',mode:'manual',secid:'',qty:'',price:'',note:'原表后卫537.61万里，扣掉保险350万后剩下约187.61万，分散在招行/平安等账户，按实际拆开填'},
+  {id:'spy',name:'嘉信·SPY(标普500ETF)',cat:'中锋',ccy:'USD',mode:'live',secid:'107.SPY',qty:'',price:'',note:''},
+  {id:'vigax',name:'嘉信·VIGAX(先锋成长指数基金)',cat:'中锋',ccy:'USD',mode:'manual',secid:'',qty:'',price:'',note:'共同基金没有实时报价，手动模式，按美元金额填'},
+  {id:'tlt',name:'嘉信·TLT(20年期以上美债ETF)',cat:'中锋',ccy:'USD',mode:'live',secid:'105.TLT',qty:'',price:'',note:'前缀不确定，—就换106或107试试'},
+  {id:'lqd',name:'嘉信·LQD(投资级公司债ETF)',cat:'中锋',ccy:'USD',mode:'live',secid:'107.LQD',qty:'',price:'',note:'前缀不确定，—就试试105或106'},
+  {id:'splv',name:'嘉信·SPLV(低波动ETF)',cat:'中锋',ccy:'USD',mode:'live',secid:'107.SPLV',qty:'',price:'',note:'前缀不确定，—就试试105或106'},
+  {id:'vdc',name:'嘉信·VDC(必需消费品ETF)',cat:'中锋',ccy:'USD',mode:'live',secid:'107.VDC',qty:'',price:'',note:'前缀不确定，—就试试105或106'},
+  {id:'xlu',name:'嘉信·XLU(公用事业ETF)',cat:'中锋',ccy:'USD',mode:'live',secid:'107.XLU',qty:'',price:'',note:'前缀不确定，—就试试105或106'},
+  {id:'xlv',name:'嘉信·XLV(医疗保健ETF)',cat:'中锋',ccy:'USD',mode:'live',secid:'107.XLV',qty:'',price:'',note:'前缀不确定，—就试试105或106'},
+  {id:'fxy',name:'嘉信·FXY(日元ETF)',cat:'中锋',ccy:'USD',mode:'live',secid:'107.FXY',qty:'',price:'',note:'前缀不确定，—就试试105或106'},
+  {id:'gld',name:'嘉信·GLD(黄金ETF)',cat:'中锋',ccy:'USD',mode:'live',secid:'107.GLD',qty:'',price:'',note:'前缀不确定，—就试试105或106'},
+  {id:'gdx',name:'嘉信·GDX(黄金矿业股ETF)',cat:'前锋',ccy:'USD',mode:'live',secid:'107.GDX',qty:'',price:'',note:'前缀不确定，—就试试105或106'},
+  {id:'kweb',name:'嘉信·KWEB(中概互联网ETF)',cat:'前锋',ccy:'USD',mode:'live',secid:'107.KWEB',qty:'',price:'',note:'前缀不确定，—就试试105或106'},
+  {id:'xitk',name:'嘉信·XITK(创新科技主题ETF)',cat:'前锋',ccy:'USD',mode:'live',secid:'107.XITK',qty:'',price:'',note:'前缀不确定，—就试试105或106'},
+];
+let holdings=ls('holdings',defaultHoldings);
+// 兼容旧数据：把这次新补的持仓行追加进你已经保存的持仓列表里，已经手动编辑过的老行不覆盖；
+// 只做一次(用版本标记)，之后如果你自己把某一行删了，不会被这次的默认值加回来。
+if(!ls('holdings_upd_202609b',0)){
+  const existingIds=new Set(holdings.map(h=>h.id));
+  const toAddH=defaultHoldings.filter(d=>!existingIds.has(d.id));
+  if(toAddH.length)holdings=holdings.concat(toAddH);
+  lss('holdings',holdings);lss('holdings_upd_202609b',1);
+}
+let livePrices=ls('livePrices',{});
+let liveUSDCNY=ls('liveUSDCNY',null);
+
+function holdRawValue(h){
+  const qty=parseFloat(h.qty);
+  if(!qty)return null;
+  const price=h.mode==='live'?livePrices[h.secid]:parseFloat(h.price);
+  if(price==null||isNaN(price))return null;
+  return qty*price;
+}
+function holdRMBValue(h){
+  const raw=holdRawValue(h);
+  if(raw==null)return null;
+  if(h.ccy==='USD'){if(liveUSDCNY==null)return null;return raw*liveUSDCNY}
+  return raw;
+}
+function buildDonut2(containerId,legendId,data,total){
+  const svg=document.querySelector('#'+containerId+' svg');
+  const centerEl=document.getElementById(containerId+'-c');
+  if(!svg)return;
+  svg.innerHTML='';
+  const valid=data.filter(d=>d.amt>0);
+  if(!total||!valid.length){
+    if(centerEl)centerEl.textContent='—';
+    const lg=document.getElementById(legendId);if(lg)lg.innerHTML='<div style="font-size:10px;color:var(--text3)">暂无足够数据</div>';
+    return;
+  }
+  const R=40,C=2*Math.PI*R,CX=50,CY=50;let offset=0;
+  const ns='http://www.w3.org/2000/svg';
+  valid.forEach(d=>{
+    const frac=d.amt/total,len=frac*C;
+    const circle=document.createElementNS(ns,'circle');
+    circle.setAttribute('cx',CX);circle.setAttribute('cy',CY);circle.setAttribute('r',R);
+    circle.setAttribute('fill','none');circle.setAttribute('stroke',d.color);
+    circle.setAttribute('stroke-width','16');
+    circle.setAttribute('stroke-dasharray',len+' '+(C-len));
+    circle.setAttribute('stroke-dashoffset',-offset);
+    svg.appendChild(circle);offset+=len;
+  });
+  if(centerEl)centerEl.textContent='¥'+fmt(total/10000,0)+'万';
+  const lg=document.getElementById(legendId);
+  if(lg)lg.innerHTML=valid.map(d=>`<div class="d2row"><span class="d2sw" style="background:${d.color}"></span><span class="d2name">${d.name}</span><span class="d2pct">${(d.amt/total*100).toFixed(1)}%</span></div>`).join('');
+}
+function renderHoldings(){
+  const rowsEl=document.getElementById('hrows');
+  if(!rowsEl)return;
+  rowsEl.innerHTML=holdings.map(h=>{
+    const rmb=holdRMBValue(h);
+    const priceDisp=h.mode==='live'
+      ?(livePrices[h.secid]!=null?fmt(livePrices[h.secid]):'<span class="lpulse" style="width:36px;height:12px"></span>')
+      :(h.price!==''&&h.price!=null&&h.price!==0?fmt(parseFloat(h.price)):'—');
+    return `<div class="hrow">
+      <div><div class="hname">${h.name}</div>${h.note?`<div class="hnote">${h.note}</div>`:''}</div>
+      <div><span class="hcat" style="background:${CAT_COLOR[h.cat]}">${h.cat}</span></div>
+      <div class="hcell">${h.ccy}</div>
+      <div class="hcell">${h.qty||'—'}</div>
+      <div class="hcell">${priceDisp}</div>
+      <div class="hcell" style="font-weight:700;color:var(--text1)">${rmb!=null?'¥'+fmt(rmb,0):'—'}</div>
+      <div class="hcell" style="font-size:9px">${h.mode==='live'?'实时':'手动'}</div>
+    </div>`;
+  }).join('');
+  let total=0,byCat={'后卫':0,'中锋':0,'前锋':0},byCcy={'RMB':0,'USD':0,'WRAP':0,'BW':0},missing=false;
+  holdings.forEach(h=>{
+    const rmb=holdRMBValue(h);
+    if(rmb==null){missing=true;return}
+    total+=rmb;byCat[h.cat]=(byCat[h.cat]||0)+rmb;byCcy[h.ccy]=(byCcy[h.ccy]||0)+rmb;
+  });
+  const setStat=(id,v)=>{const el=document.getElementById(id);if(el)el.textContent=v};
+  setStat('h-total',total?'¥'+fmt(total/10000,1)+'万':'—');
+  const tsEl=document.getElementById('h-total-ts');if(tsEl)tsEl.textContent=missing?'部分持仓缺数量/价格，未计入':'';
+  ['后卫','中锋','前锋'].forEach((c,i)=>{
+    const id=i===0?'h-defense':i===1?'h-mid':'h-forward';
+    setStat(id,total?(byCat[c]/total*100).toFixed(1)+'%':'—');
+  });
+  buildDonut2('donut-hstyle','legend-hstyle',['后卫','中锋','前锋'].map(c=>({name:c,amt:byCat[c],color:CAT_COLOR[c]})),total);
+  buildDonut2('donut-hccy','legend-hccy',['RMB','USD','WRAP','BW'].map(c=>({name:CCY_LABEL[c],amt:byCcy[c],color:CCY_COLOR[c]})),total);
+}
+function openHoldingsEdit(){
+  ectx='holdings';
+  document.getElementById('etit').textContent='编辑持仓';
+  renderHoldingsEditFields();
+  document.getElementById('eov').classList.add('on');
+}
+function renderHoldingsEditFields(){
+  const esc=s=>(s||'').replace(/&/g,'&amp;').replace(/"/g,'&quot;');
+  document.getElementById('efields').innerHTML=
+    holdings.map((h,i)=>`
+    <div class="hedit-row">
+      <button class="hedit-del" onclick="delHoldingRow(${i})">✕ 删除</button>
+      <div style="display:grid;grid-template-columns:2fr 1fr 1.3fr;gap:6px;margin-bottom:6px">
+        <div class="field"><label>名称</label><input id="hf-${i}-name" value="${esc(h.name)}"/></div>
+        <div class="field"><label>分类</label><select id="hf-${i}-cat">${['后卫','中锋','前锋'].map(c=>`<option ${h.cat===c?'selected':''}>${c}</option>`).join('')}</select></div>
+        <div class="field"><label>币种</label><select id="hf-${i}-ccy">${Object.keys(CCY_LABEL).map(c=>`<option value="${c}" ${h.ccy===c?'selected':''}>${CCY_LABEL[c]}</option>`).join('')}</select></div>
+      </div>
+      <div style="display:grid;grid-template-columns:1fr 1fr 1fr 1fr;gap:6px">
+        <div class="field"><label>模式</label><select id="hf-${i}-mode">
+          <option value="live" ${h.mode==='live'?'selected':''}>实时行情</option>
+          <option value="manual" ${h.mode==='manual'?'selected':''}>手动</option>
+        </select></div>
+        <div class="field"><label>行情代码</label><input id="hf-${i}-secid" value="${esc(h.secid)}" placeholder="如1.600519"/></div>
+        <div class="field"><label>数量</label><input id="hf-${i}-qty" value="${h.qty}"/></div>
+        <div class="field"><label>手动价/净值</label><input id="hf-${i}-price" value="${h.price}" placeholder="美元币种填美元金额"/></div>
+      </div>
+      <div class="field" style="margin-top:6px"><label>备注</label><input id="hf-${i}-note" value="${esc(h.note)}"/></div>
+    </div>`).join('') +
+    `<button class="btn btn-g" style="width:100%;padding:8px" onclick="addHoldingRow()">+ 添加一行</button>`;
+}
+function addHoldingRow(){
+  holdings.push({id:'h'+Date.now(),name:'新持仓',cat:'中锋',ccy:'RMB',mode:'manual',secid:'',qty:'',price:'',note:''});
+  renderHoldingsEditFields();
+}
+function delHoldingRow(i){holdings.splice(i,1);renderHoldingsEditFields();}
+function saveHoldingsFromModal(){
+  holdings.forEach((h,i)=>{
+    const g=f=>{const el=document.getElementById(`hf-${i}-${f}`);return el?el.value:h[f]};
+    h.name=g('name');h.cat=g('cat');h.ccy=g('ccy');h.mode=g('mode');h.secid=g('secid').trim();h.qty=g('qty');h.price=g('price');h.note=g('note');
+  });
+  lss('holdings',holdings);renderHoldings();
+}
+async function refreshHoldingPrices(){
+  const liveRows=holdings.filter(h=>h.mode==='live'&&h.secid);
+  if(!liveRows.length){renderHoldings();return}
+  const data=await emFetch(liveRows.map(h=>h.secid).join(','));
+  liveRows.forEach(h=>{
+    const pureCode=h.secid.split('.').pop();
+    const item=data[pureCode];
+    if(item&&item.price!=null)livePrices[h.secid]=item.price;
+  });
+  lss('livePrices',livePrices);
+  renderHoldings();
+}
+
 // ── CARD HELPERS ──────────────────────────
 const fmt=(n,d=2)=>{
   if(n==null||isNaN(n))return'—';
@@ -871,6 +1120,7 @@ async function init(){
       const id=EM_MAP[code];if(!id||!item)continue;
       if(id==='VIX')svix(item.price,now);
       else sc(id,item.price,item.chg,item.pct,now);
+      if(id==='USDCNY'&&item.price!=null){liveUSDCNY=item.price;lss('liveUSDCNY',liveUSDCNY)}
     }
   }
   if(treasury){
@@ -896,6 +1146,7 @@ async function init(){
   });
   document.getElementById('lu').textContent=`上次刷新 ${now}`;
   rvt();loadCharts();
+  await refreshHoldingPrices();
 }
 
 // ── CHARTS ────────────────────────────────
@@ -1097,6 +1348,8 @@ function se(){
     const v=document.getElementById('cf-v');const d=document.getElementById('cf-d');
     if(v)cn10y.v=v.value;if(d)cn10y.d=d.value;
     lss('cn10y',cn10y);renderCN10Y();
+  } else if(ectx==='holdings'){
+    saveHoldingsFromModal();
   } else {
     const reg=ectx.split('-')[1];
     md[reg].forEach(x=>{
@@ -1129,9 +1382,13 @@ function rj(){
   });
   el.innerHTML=order.map(i=>{
     const j=journals[i];
+    const extra=[];
+    if(j.stop)extra.push(`🛑 ${j.stop}`);
+    if(j.review)extra.push(`📅 复核 ${j.review}`);
     return `<div class="jentry ${j.pinned?'pinned':''}" onclick="vj(${i})">
       <div class="jrow-top"><div class="jdate">${j.ts}</div><button class="jpin ${j.pinned?'on':''}" onclick="event.stopPropagation();togglePin(${i})" title="${j.pinned?'取消置顶':'置顶'}">📌</button></div>
       <div class="jprev">${j.text}</div>
+      ${extra.length?`<div class="jtags" style="margin-top:3px">${extra.map(t=>`<span class="jtag" style="background:#FEF9C3;color:#A16207">${t}</span>`).join('')}</div>`:''}
       ${j.tags.length?`<div class="jtags">${j.tags.map(t=>`<span class="jtag">${t}</span>`).join('')}</div>`:''}
     </div>`;
   }).join('');
@@ -1140,10 +1397,19 @@ function togglePin(i){journals[i].pinned=!journals[i].pinned;lss('journals',jour
 function saveJ(){
   const text=document.getElementById('jtxt').value.trim();if(!text)return;
   const tags=document.getElementById('jtags').value.split(/[,，\s]+/).filter(Boolean);
-  journals.push({text,tags,ts:ts(),snap:gsnap(),pinned:false});lss('journals',journals);
-  document.getElementById('jtxt').value='';document.getElementById('jtags').value='';rj();
+  const stop=document.getElementById('jstop').value.trim();
+  const review=document.getElementById('jreview').value;
+  journals.push({text,tags,ts:ts(),snap:gsnap(),pinned:false,stop,review});lss('journals',journals);
+  document.getElementById('jtxt').value='';document.getElementById('jtags').value='';
+  document.getElementById('jstop').value='';document.getElementById('jreview').value='';
+  rj();
 }
-function vj(i){const j=journals[i];alert(`[${j.ts}]\n\n${j.text}${j.tags.length?'\n\n标签: '+j.tags.join(', '):''}${j.snap?'\n\n──快照──\n'+j.snap:''}`)}
+function vj(i){
+  const j=journals[i];let extra='';
+  if(j.stop)extra+=`\n止损/止盈: ${j.stop}`;
+  if(j.review)extra+=`\n强制复核日期: ${j.review}`;
+  alert(`[${j.ts}]\n\n${j.text}${extra}${j.tags.length?'\n\n标签: '+j.tags.join(', '):''}${j.snap?'\n\n──快照──\n'+j.snap:''}`)
+}
 
 // ── SNAPSHOTS ─────────────────────────────
 let snaps=ls('snaps',[]);
@@ -1179,7 +1445,7 @@ function epdf(i){
 document.getElementById('dov').addEventListener('click',e=>{if(e.target===document.getElementById('dov'))cd()});
 document.getElementById('eov').addEventListener('click',e=>{if(e.target===document.getElementById('eov'))ce()});
 
-function startApp(){rvt();rm('us');rm('cn');rj();rs();renderGold();renderSector();renderCN10Y();init();setInterval(init,5*60*1000)}
+function startApp(){rvt();rm('us');rm('cn');rj();rs();renderGold();renderSector();renderCN10Y();renderHoldings();init();setInterval(init,5*60*1000)}
 if(ls('auth','')=== PW)startApp();
 </script>
 </body>
